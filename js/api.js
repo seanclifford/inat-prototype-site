@@ -1,6 +1,6 @@
 var Api = {
     getUserName: async function(user){
-        fetch('http://api.inaturalist.org/v1/users/' + user, {
+        fetch('https://api.inaturalist.org/v1/users/' + user, {
             headers: {
                 Accept: 'application/json'
             }
