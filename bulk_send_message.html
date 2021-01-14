@@ -1,0 +1,31 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+  
+    <title>INat prototypes - Bulk Send Messages PROTOTYPE</title>
+    <meta name="description" content="Bulk Send Messages prototype for INaturalist">
+    <meta name="author" content="Sean Clifford">
+  
+    <link rel="stylesheet" href="css/styles.css?v=1.0">
+  
+  </head>
+  
+  <body>
+    <h1>Bulk Send Messages prototype for INaturalist</h1>
+    <h2>TODO:</h2>
+    <ul>
+      <li>Enter csv of user ids<br/>
+        <input type="text" id="user_ids">
+    </li>
+      
+      <li><input type="button" value='GO' onclick='Api.getUserName(document.getElementById("user_ids").value)'></li>
+      <li>Enter message</li>
+      <li>Enter user session id (could get it??)</li>
+      <li>GO</li>
+    </ul>
+  
+    <script src="js/api.js"></script>
+  </body>
+</html>
