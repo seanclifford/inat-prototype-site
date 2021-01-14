@@ -2,7 +2,7 @@ const API_ENDPOINT = 'https://api.inaturalist.org/v1/';
 
 var Api = {
     getUserName: async function(user){
-        let user = getUser(user)
+        let user = getUser(user);
         alert(user.results[0].name);
     },
     
@@ -11,6 +11,4 @@ var Api = {
 
         return await response.json()
     }
-
-
 }
