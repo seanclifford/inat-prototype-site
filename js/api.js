@@ -6,7 +6,7 @@ const delay = ms => new Promise(res => setTimeout(res, ms));
 var limitFactory = function(){
     const LIMIT = 1000;
     var nextTime = window.performance.now();
-    var difference = 0, count = 0;
+    var difference = 0;
     return async function limit(func){
         
         difference = (nextTime - window.performance.now());
