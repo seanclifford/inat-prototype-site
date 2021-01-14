@@ -10,6 +10,7 @@
   
     <link rel="stylesheet" href="css/styles.css?v=1.0">
   
+    
   </head>
   
   <body>
@@ -18,14 +19,30 @@
     <ul>
       <li>Enter csv of user ids<br/>
         <input type="text" id="user_ids">
-    </li>
+      </li>
       
-      <li><input type="button" value='GO' onclick='Api.getUserName(document.getElementById("user_ids").value)'></li>
-      <li>Enter message</li>
-      <li>Enter user session id (could get it??)</li>
+      <li>
+        <input type="button" value='GO' onclick='getUserIds()'>
+        <div id='users_found'></div>
+      </li>
+      <li>Enter message <br/>
+        <textarea id='message'></textarea>
+      </li>
+      <li>Enter user session token. Go to <a href='https://inaturalist.nz/users/api_token' target="_blank">this page</a>, copy the api_token value without quotes, and paste it below:<br/>
+        <input type="text" id="session_token">
+      </li>
       <li>GO</li>
     </ul>
   
     <script src="js/api.js"></script>
+    <script>
+        async function getUserIds(){
+            let input = document.getElementById("user_ids").value;
+            let user = await Api.getUser(input)
+            let div = document.getElementById('users_found');
+            div.innerHTML = "<img src='"+user.icon+"'>"+ user.name
+            alert(await Api.getApiToken());
+        }
+    </script>
   </body>
 </html>
