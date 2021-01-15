@@ -52,7 +52,7 @@ var Api = {
             headers: {
                 'User-Agent': 'agoranomos - INat Prototypes',
                 'Content-Type': 'application/json;charset=utf-8',
-                'Authentication': authToken
+                'Authorization': authToken
             },
             body: JSON.stringify(bodyObj)
         };
