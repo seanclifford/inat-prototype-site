@@ -22,7 +22,6 @@
       <li>List users in page correctly</li>
       <li>Output errors</li>
       <li>List messages sent successfully</li>
-      <li>Enter subject</li>
     </ul>
 
     <h2>Start here:</h2>
@@ -34,6 +33,9 @@
       <li>
         <input type="button" value='Load Users' onclick='getUserIds()'>
         <div id='users_found'></div>
+      </li>
+      <li>Enter subject <br/>
+        <input type="text" id="subject">
       </li>
       <li>Enter message <br/>
         <textarea id='message'></textarea>
@@ -55,7 +57,7 @@
           div.innerHTML = "<img src='"+user.icon+"'>"+ user.name
       }
       function sendMessages(){ 
-        let subject = 'Test';
+        let subject = document.getElementById('subject').value;
         let message = document.getElementById('message').value;
         let authToken = document.getElementById('auth_token').value;
         
