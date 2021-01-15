@@ -17,12 +17,22 @@
     <h1>Bulk Send Messages prototype for INaturalist</h1>
     <h2>TODO:</h2>
     <ul>
+      <li>Authenticate properly</li>
+      <li>Get distinct users from list of observation ids</li>
+      <li>List users in page correctly</li>
+      <li>Output errors</li>
+      <li>List messages sent successfully</li>
+      <li>Enter subject</li>
+    </ul>
+
+    <h2>Start here:</h2>
+    <ul>
       <li>Enter csv of user ids<br/>
         <input type="text" id="user_ids">
       </li>
       
       <li>
-        <input type="button" value='GO' onclick='getUserIds()'>
+        <input type="button" value='Load Users' onclick='getUserIds()'>
         <div id='users_found'></div>
       </li>
       <li>Enter message <br/>
@@ -31,7 +41,7 @@
       <li>Enter user session token. Go to <a href='https://inaturalist.nz/users/api_token' target="_blank">this page</a>, copy the api_token value without quotes, and paste it below:<br/>
         <input type="text" id="auth_token">
       </li>
-      <li><input type="button" value='GO' onclick='sendMessages()'></li>
+      <li><input type="button" value='Send Messages' onclick='sendMessages()'></li>
     </ul>
   
     <script src="js/api.js"></script>
