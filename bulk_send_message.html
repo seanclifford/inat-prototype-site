@@ -44,13 +44,14 @@
           let div = document.getElementById('users_found');
           div.innerHTML = "<img src='"+user.icon+"'>"+ user.name
       }
-      async function sendMessages(){ 
+      function sendMessages(){ 
         let subject = 'Test';
         let message = document.getElementById('message').value;
         let authToken = document.getElementById('auth_token').value;
         
-        await Api.sendMessage(userIds[0], subject, message, authToken);
-        
+        Promise.all(userIds.map(async (userId) => {
+          await Api.sendMessage(userIds[0], subject, message, authToken);
+        }));
       }
     </script>
   </body>
