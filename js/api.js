@@ -24,9 +24,37 @@ var limitFactory = function(){
 
 var Api = {
     limiter: limitFactory(),
-    getUser: async function(userId){
-        let response = await Api.limiter(async () => { return await fetch(API_ENDPOINT + 'users/' + userId);});
+    getUser: async function(userId) {
+        let response = await Api.limiter(async () => { return await fetch(API_ENDPOINT + 'users/' + userId, Api.getFetchOptions);});
         let body = await response.json();
         return body.results[0];
+    },
+    sendMessage: async function(toUserId, subject, message, authToken) {
+        let bodyObj = {
+            "message": {
+                "to_user_id": toUserId,
+                "thread_id": 0,
+                "subject": subject,
+                "body": message
+            }
+        };
+        await Api.limiter(async () => { return await fetch(API_ENDPOINT + 'messages', Api.postFetchOptions(bodyObj, authToken));});
+    },
+    getFetchOptions: {
+        method: 'GET',
+        headers: {
+            'User-Agent': 'agoranomos - INat Prototypes'
+        }
+    },
+    postFetchOptions: function(bodyObj, authToken) {
+        return {
+            method: 'POST',
+            headers: {
+                'User-Agent': 'agoranomos - INat Prototypes',
+                'Content-Type': 'application/json;charset=utf-8',
+                'Authentication': authToken
+            },
+            body: JSON.stringify(bodyObj)
+        };
     }
 }

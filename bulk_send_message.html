@@ -29,20 +29,29 @@
         <textarea id='message'></textarea>
       </li>
       <li>Enter user session token. Go to <a href='https://inaturalist.nz/users/api_token' target="_blank">this page</a>, copy the api_token value without quotes, and paste it below:<br/>
-        <input type="text" id="session_token">
+        <input type="text" id="auth_token">
       </li>
-      <li>GO</li>
+      <li><input type="button" value='GO' onclick='sendMessages()'></li>
     </ul>
   
     <script src="js/api.js"></script>
     <script>
-        async function getUserIds(){
-            let input = document.getElementById("user_ids").value;
-            let user = await Api.getUser(input)
-            let div = document.getElementById('users_found');
-            div.innerHTML = "<img src='"+user.icon+"'>"+ user.name
-            alert(await Api.getApiToken());
-        }
+      var userIds = [];
+      async function getUserIds() {
+          let input = document.getElementById("user_ids").value;
+          let user = await Api.getUser(input)
+          userIds.push(user);
+          let div = document.getElementById('users_found');
+          div.innerHTML = "<img src='"+user.icon+"'>"+ user.name
+      }
+      async function sendMessages(){ 
+        let subject = 'Test';
+        let message = document.getElementById('message').value;
+        let authToken = document.getElementById('auth_token').value;
+        
+        await Api.sendMessage(userIds[0], subject, message, authToken);
+        
+      }
     </script>
   </body>
 </html>
