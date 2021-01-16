@@ -19,7 +19,6 @@
     <ul>
       <li>Authenticate properly</li>
       <li>Get distinct users from list of observation ids</li>
-      <li>List users in page correctly</li>
     </ul>
 
     <h2>Start here:</h2>
@@ -51,17 +50,21 @@
     <script>
       var userIds = [];
       async function getUserIds() {
-          let input = document.getElementById("user_ids").value;
-          let user = await Api.getUser(input)
+        let input = document.getElementById("user_ids").value;
+        let inputArray = input.split(',');
+        userIds = [];
+        let div = document.getElementById('users_found');
+        div.innerHTML = "";
+        for(let i = 0; i < inputArray.length; i++) {
+          let user = await Api.getUser(inputArray[i])
           if (user.status === 'ERROR') {
-            let div = document.getElementById('users_found');
-            div.innerHTML = `<p>${user.message}</p>`
+            div.innerHTML += `<p>${user.message}</p>`
           }
           else {
             userIds.push(user.id);
-            let div = document.getElementById('users_found');
-            div.innerHTML = "<img src='"+user.icon+"'>"+ user.name
+            div.innerHTML += `<img src='${user.icon}'> ${user.name}<br/>`
           }
+        }
       }
       async function sendMessages(){ 
         let subject = document.getElementById('subject').value;
