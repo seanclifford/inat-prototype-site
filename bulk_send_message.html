@@ -20,8 +20,6 @@
       <li>Authenticate properly</li>
       <li>Get distinct users from list of observation ids</li>
       <li>List users in page correctly</li>
-      <li>Output errors</li>
-      <li>List messages sent successfully</li>
     </ul>
 
     <h2>Start here:</h2>
@@ -43,7 +41,10 @@
       <li>Enter user session token. Go to <a href='https://inaturalist.nz/users/api_token' target="_blank">this page</a>, copy the api_token value without quotes, and paste it below:<br/>
         <input type="text" id="auth_token">
       </li>
-      <li><input type="button" value='Send Messages' onclick='sendMessages()'></li>
+      <li>
+        <input type="button" value='Send Messages' onclick='sendMessages()'><br/>
+        <div id="send_result"></div>
+      </li>
     </ul>
   
     <script src="js/api.js"></script>
@@ -52,18 +53,34 @@
       async function getUserIds() {
           let input = document.getElementById("user_ids").value;
           let user = await Api.getUser(input)
-          userIds.push(user);
-          let div = document.getElementById('users_found');
-          div.innerHTML = "<img src='"+user.icon+"'>"+ user.name
+          if (user.status === 'ERROR') {
+            let div = document.getElementById('users_found');
+            div.innerHTML = `<p>${user.message}</p>`
+          }
+          else {
+            userIds.push(user.id);
+            let div = document.getElementById('users_found');
+            div.innerHTML = "<img src='"+user.icon+"'>"+ user.name
+          }
       }
-      function sendMessages(){ 
+      async function sendMessages(){ 
         let subject = document.getElementById('subject').value;
         let message = document.getElementById('message').value;
         let authToken = document.getElementById('auth_token').value;
         
-        Promise.all(userIds.map(async (userId) => {
-          await Api.sendMessage(userIds[0], subject, message, authToken);
+        let results = await Promise.all(userIds.map(async (userId) => {
+          return await Api.sendMessage(userId, subject, message, authToken);
         }));
+
+        let errorResults = results.filter(result => result.status === 'ERROR');
+        let successCount = results.length - errorResults.length;
+        let sendMessageResult = `Successfully sent ${successCount} out of ${results.length} message.`;
+        if (errorResults.length > 0) {
+          sendMessageResult += ' ERRORS:';
+          errorResults.forEach(error => sendMessageResult += error.message + ' ');
+        }
+        let div = document.getElementById('send_result');
+        div.innerHTML = `<p>${sendMessageResult}</p>`;
       }
     </script>
   </body>

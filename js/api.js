@@ -25,9 +25,19 @@ var limitFactory = function(){
 var Api = {
     limiter: limitFactory(),
     getUser: async function(userId) {
-        let response = await Api.limiter(async () => { return await fetch(API_ENDPOINT + 'users/' + userId, Api.getFetchOptions);});
-        let body = await response.json();
-        return body.results[0];
+       
+            let response = await Api.limiter(async () => { return await fetch(API_ENDPOINT + 'users/' + userId, Api.getFetchOptions);});
+            if (!response.ok) {
+                alert(response.status);
+                return {
+                    status: 'ERROR',
+                    message: `Could not find user '${userId}'`
+                }
+            }
+            else {
+                let body = await response.json();
+                return body.results[0];
+            }
     },
     sendMessage: async function(toUserId, subject, message, authToken) {
         let bodyObj = {
@@ -38,7 +48,20 @@ var Api = {
                 "body": message
             }
         };
-        await Api.limiter(async () => { return await fetch(API_ENDPOINT + 'messages', Api.postFetchOptions(bodyObj, authToken));});
+        let response = await Api.limiter(async () => { return await fetch(API_ENDPOINT + 'messages', Api.postFetchOptions(bodyObj, authToken));});
+        if (response.ok) {
+            return {status: 'OK'}
+        }
+        else {
+            let body = await response.json();
+            errorMessage = body?.error?.original?.errors?.base[0];
+            errorMessage = errorMessage ?? body?.error?.original?.error;
+            return {
+                
+                status: 'ERROR',
+                message: `Could not send message to user '${toUserId}'. ${errorMessage??''}`
+            }
+        }
     },
     getFetchOptions: {
         method: 'GET',
