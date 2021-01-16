@@ -25,19 +25,30 @@ var limitFactory = function(){
 var Api = {
     limiter: limitFactory(),
     getUser: async function(userId) {
-       
-            let response = await Api.limiter(async () => { return await fetch(API_ENDPOINT + 'users/' + userId, Api.getFetchOptions);});
-            if (!response.ok) {
-                alert(response.status);
-                return {
-                    status: 'ERROR',
-                    message: `Could not find user '${userId}'`
-                }
+        let response = await Api.limiter(async () => { return await fetch(API_ENDPOINT + 'users/' + userId, Api.getFetchOptions);});
+        if (!response.ok) {
+            return {
+                status: 'ERROR',
+                message: `Could not find user '${userId}'`
             }
-            else {
-                let body = await response.json();
-                return body.results[0];
+        }
+        else {
+            let body = await response.json();
+            return body.results[0];
+        }
+    },
+    getObservations: async function(observationIds) {
+        let response = await Api.limiter(async () => { return await fetch(API_ENDPOINT + 'observations/' + observationIds, Api.getFetchOptions);});
+        if (!response.ok) {
+            return {
+                status: 'ERROR',
+                message: `Could not load observations '${observationIds}'`
             }
+        }
+        else {
+            let body = await response.json();
+            return body.results;
+        }
     },
     sendMessage: async function(toUserId, subject, message, authToken) {
         let bodyObj = {

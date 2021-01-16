@@ -18,7 +18,8 @@
     <h2>TODO:</h2>
     <ul>
       <li>Authenticate properly</li>
-      <li>Get distinct users from list of observation ids</li>
+      <li>Replace tokens with dynamic values in messages. i.e. Hi @username! </li>
+      <li>Add userhandle to user list</li>
     </ul>
 
     <h2>Start here:</h2>
@@ -26,9 +27,11 @@
       <li>Enter csv of user ids<br/>
         <input type="text" id="user_ids">
       </li>
-      
+      <li>OR Enter csv of observation ids<br/>
+        <input type="text" id="observation_ids">
+      </li>
       <li>
-        <input type="button" value='Load Users' onclick='getUserIds()'>
+        <input type="button" value='Load Users' onclick='loadUsers()'>
         <div id='users_found'></div>
       </li>
       <li>Enter subject <br/>
@@ -49,14 +52,42 @@
     <script src="js/api.js"></script>
     <script>
       var userIds = [];
-      async function getUserIds() {
-        let input = document.getElementById("user_ids").value;
-        let inputArray = input.split(',');
+      async function loadUsers() {
+        let userNamesCsv = document.getElementById("user_ids").value;
+        let observationIdsCsv = document.getElementById("observation_ids").value;
+        if (userNamesCsv) {
+          await getUsersByNamesCsv(userNamesCsv);
+        }
+        else if (observationIdsCsv) {
+          await getUsersByObservations(observationIdsCsv);
+        }
+        else {
+          alert('Enter some user names or observation ids')
+        }
+      }
+      async function getUsersByObservations(observationIdsCsv) {
+        let convertedCsv = observationIdsCsv.replace(/\s/g,'');
+        let observations = await Api.getObservations(convertedCsv);
+        if (observations.status === 'ERROR'){
+          let div = document.getElementById('users_found');
+          div.innerHTML += `<p>${observations.message}</p>`
+        }
+        else {
+          let obsUserIds = observations.map(observation => observation.user.id);
+          let uniqueObsUserIds = [...new Set(obsUserIds.map(userId => userId))];
+          await getUsersByNamesArray(uniqueObsUserIds);
+        }
+      }
+      async function getUsersByNamesCsv(userNamesCsv) {
+        let userNames = userNamesCsv.split(',');
+        await getUsersByNamesArray(userNames)
+      }
+      async function getUsersByNamesArray(userNames) {
         userIds = [];
         let div = document.getElementById('users_found');
         div.innerHTML = "";
-        for(let i = 0; i < inputArray.length; i++) {
-          let user = await Api.getUser(inputArray[i])
+        for(let i = 0; i < userNames.length; i++) {
+          let user = await Api.getUser(userNames[i])
           if (user.status === 'ERROR') {
             div.innerHTML += `<p>${user.message}</p>`
           }
