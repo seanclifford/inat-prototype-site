@@ -19,17 +19,23 @@
     <ul>
       <li>Authenticate properly</li>
       <li>Replace tokens with dynamic values in messages. i.e. Hi @username! </li>
-      <li>Add userhandle to user list</li>
-      <li>Load observation ids from a file (observations get response json)</li>
     </ul>
 
     <h2>Start here:</h2>
     <ul>
-      <li>Enter csv of user ids<br/>
-        <input type="text" id="user_ids">
-      </li>
-      <li>OR Enter csv of observation ids<br/>
-        <input type="text" id="observation_ids">
+      <li>
+        Choose data source to load users from:
+        <ul>
+          <li>Enter csv of user ids<br/>
+            <input type="text" id="user_ids">
+          </li>
+          <li>OR load from observations json file<br/>
+            <input type="file" id="fileUpload" />
+          </li>
+          <li>OR Enter csv of observation ids<br/>
+            <input type="text" id="observation_ids">
+          </li>
+        </ul>
       </li>
       <li>
         <input type="button" value='Load Users' onclick='loadUsers()'>
@@ -56,19 +62,34 @@
       async function loadUsers() {
         let userNamesCsv = document.getElementById("user_ids").value;
         let observationIdsCsv = document.getElementById("observation_ids").value;
-        if (userNamesCsv) {
+        let fileUpload = document.getElementById("fileUpload").files[0];
+        if (fileUpload) {
+          getUsersFromFile(fileUpload);
+        }
+        else if (userNamesCsv) {
           await getUsersByNamesCsv(userNamesCsv);
         }
         else if (observationIdsCsv) {
-          await getUsersByObservations(observationIdsCsv);
+          await getUsersByObservationsCsv(observationIdsCsv);
         }
         else {
           alert('Enter some user names or observation ids')
         }
       }
-      async function getUsersByObservations(observationIdsCsv) {
+      function getUsersFromFile(fileUpload) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          observations = JSON.parse(e.target.result);
+          getUsersByObservations(observations.results); 
+        }
+        reader.readAsText(fileUpload);
+      }
+      async function getUsersByObservationsCsv(observationIdsCsv) {
         let convertedCsv = observationIdsCsv.replace(/\s/g,'');
         let observations = await Api.getObservations(convertedCsv);
+        getUsersByObservations(observations);
+      }
+      function getUsersByObservations(observations) {
         let div = document.getElementById('users_found');
         div.innerHTML = "";
         if (observations.status === 'ERROR'){
