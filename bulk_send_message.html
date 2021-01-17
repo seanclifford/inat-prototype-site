@@ -22,7 +22,7 @@
     </ul>
 
     <h2>Start here:</h2>
-    <ul>
+    <ol>
       <li>
         Choose data source to load users from:
         <ul>
@@ -54,11 +54,11 @@
         <input type="button" value='Send Messages' onclick='sendMessages()'><br/>
         <div id="send_result"></div>
       </li>
-    </ul>
+    </ol>
   
     <script src="js/api.js"></script>
+    <script src="js/bulk_send_message.js"></script>
     <script>
-      var userIds = [];
       async function loadUsers() {
         let userNamesCsv = document.getElementById("user_ids").value;
         let observationIdsCsv = document.getElementById("observation_ids").value;
@@ -75,89 +75,35 @@
         else {
           alert('Enter some user names or observation ids')
         }
-      }
-      function getUsersFromFile(fileUpload) {
-        var reader = new FileReader();
-        reader.onload = function (e) {
-          observations = JSON.parse(e.target.result);
-          getUsersByObservations(observations.results); 
-        }
-        reader.readAsText(fileUpload);
-      }
-      async function getUsersByObservationsCsv(observationIdsCsv) {
-        let convertedCsv = observationIdsCsv.replace(/\s/g,'');
-        let observations = await Api.getObservations(convertedCsv);
-        getUsersByObservations(observations);
-      }
-      function getUsersByObservations(observations) {
-        let div = document.getElementById('users_found');
-        div.innerHTML = "";
-        if (observations.status === 'ERROR'){
-          div.innerHTML += `<p>${observations.message}</p>`
-        }
-        else {
-          const obsUsers = observations.map(observation => observation.user);
-          const uniqueObsUsers = [];
-          const map = new Map();
-          for (const user of obsUsers) {
-            if(!map.has(user.id)){
-              map.set(user.id, true);
-              uniqueObsUsers.push(user);
-            }
-          }
-          uniqueObsUsers.forEach(user => {
-            addUser(div, user);
-          });
-        }
-      }
-      async function getUsersByNamesCsv(userNamesCsv) {
-        const userNames = userNamesCsv.split(',');
-        await getUsersByNamesArray(userNames)
-      }
-      async function getUsersByNamesArray(userNames) {
-        userIds = [];
-        let div = document.getElementById('users_found');
-        div.innerHTML = "";
-        for(let i = 0; i < userNames.length; i++) {
-          let user = await Api.getUser(userNames[i])
-          if (user.status === 'ERROR') {
-            div.innerHTML += `<p>${user.message}</p>`;
-          }
-          else {
-            addUser(div, user);
-          }
-        }
-      }
-      function addUser(div, user) {
-        userIds.push(user.id);
-        var userHandle = user.login;
-        if(user.name) {
-          userHandle += ` (${user.name})`;
-        }
-        if (user.icon) {
-          div.innerHTML += `<img width='30' src='${user.icon}'> `
-        }
-        div.innerHTML += `${userHandle}<br/>`;
-      }
+      }      
+
       async function sendMessages(){ 
         let subject = document.getElementById('subject').value;
         let message = document.getElementById('message').value;
         let authToken = document.getElementById('auth_token').value;
         
-        let results = await Promise.all(userIds.map(async (userId) => {
-          return await Api.sendMessage(userId, subject, message, authToken);
-        }));
-
-        let errorResults = results.filter(result => result.status === 'ERROR');
-        let successCount = results.length - errorResults.length;
-        let sendMessageResult = `Successfully sent ${successCount} out of ${results.length} message.`;
-        if (errorResults.length > 0) {
-          sendMessageResult += ' ERRORS:';
-          errorResults.forEach(error => sendMessageResult += error.message + ' ');
-        }
+        const result = await sendMessagesToUsers(subject, message, authToken);
+        
         let div = document.getElementById('send_result');
-        div.innerHTML = `<p>${sendMessageResult}</p>`;
+        div.innerHTML = `<p>${result}</p>`;
       }
+
+      function setError(error) {
+        let div = document.getElementById('users_found');
+        div.innerHTML += `<p>${error.message}</p>`;
+      }
+      function resetUserResults() {
+        let div = document.getElementById('users_found');
+        div.innerHTML = "";
+      }
+      function addUserResult(userResult) {
+        let div = document.getElementById('users_found');
+        if (userResult.icon) {
+          div.innerHTML += `<img width='30' src='${userResult.icon}'> `
+        }
+        div.innerHTML += `${userResult.name}<br/>`;
+      }
+
     </script>
   </body>
 </html>
