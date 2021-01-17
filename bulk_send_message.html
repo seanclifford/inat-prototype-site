@@ -20,6 +20,7 @@
       <li>Authenticate properly</li>
       <li>Replace tokens with dynamic values in messages. i.e. Hi @username! </li>
       <li>Add userhandle to user list</li>
+      <li>Load observation ids from a file (observations get response json)</li>
     </ul>
 
     <h2>Start here:</h2>
@@ -68,18 +69,28 @@
       async function getUsersByObservations(observationIdsCsv) {
         let convertedCsv = observationIdsCsv.replace(/\s/g,'');
         let observations = await Api.getObservations(convertedCsv);
+        let div = document.getElementById('users_found');
+        div.innerHTML = "";
         if (observations.status === 'ERROR'){
-          let div = document.getElementById('users_found');
           div.innerHTML += `<p>${observations.message}</p>`
         }
         else {
-          let obsUserIds = observations.map(observation => observation.user.id);
-          let uniqueObsUserIds = [...new Set(obsUserIds.map(userId => userId))];
-          await getUsersByNamesArray(uniqueObsUserIds);
+          const obsUsers = observations.map(observation => observation.user);
+          const uniqueObsUsers = [];
+          const map = new Map();
+          for (const user of obsUsers) {
+            if(!map.has(user.id)){
+              map.set(user.id, true);
+              uniqueObsUsers.push(user);
+            }
+          }
+          uniqueObsUsers.forEach(user => {
+            addUser(div, user);
+          });
         }
       }
       async function getUsersByNamesCsv(userNamesCsv) {
-        let userNames = userNamesCsv.split(',');
+        const userNames = userNamesCsv.split(',');
         await getUsersByNamesArray(userNames)
       }
       async function getUsersByNamesArray(userNames) {
@@ -89,13 +100,23 @@
         for(let i = 0; i < userNames.length; i++) {
           let user = await Api.getUser(userNames[i])
           if (user.status === 'ERROR') {
-            div.innerHTML += `<p>${user.message}</p>`
+            div.innerHTML += `<p>${user.message}</p>`;
           }
           else {
-            userIds.push(user.id);
-            div.innerHTML += `<img src='${user.icon}'> ${user.name}<br/>`
+            addUser(div, user);
           }
         }
+      }
+      function addUser(div, user) {
+        userIds.push(user.id);
+        var userHandle = user.login;
+        if(user.name) {
+          userHandle += ` (${user.name})`;
+        }
+        if (user.icon) {
+          div.innerHTML += `<img width='30' src='${user.icon}'> `
+        }
+        div.innerHTML += `${userHandle}<br/>`;
       }
       async function sendMessages(){ 
         let subject = document.getElementById('subject').value;
