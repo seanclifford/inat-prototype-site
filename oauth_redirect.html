@@ -1,0 +1,20 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>INat prototypes - OAuth page</title>
+    <meta name="author" content="Sean Clifford">
+  </head>
+  
+  <body>
+    <script src='js/auth.js'></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const auth_code = urlParams.get('code');
+
+        performTokenRequest(auth_code);
+        //TODO: complete with redirect (or web token request first?)
+    </script>
+  </body>
+</html>
