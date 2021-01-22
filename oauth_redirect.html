@@ -8,13 +8,14 @@
   </head>
   
   <body>
+    <script src="js/constants.js"></script>
     <script src='js/auth.js'></script>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const auth_code = urlParams.get('code');
 
         performTokenRequest(auth_code);
-        //TODO: complete with redirect (or web token request first?)
+        redirectToPreAuthLocation();
     </script>
   </body>
 </html>
