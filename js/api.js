@@ -2,8 +2,6 @@ const API_ENDPOINT = 'https://api.inaturalist.org/v1/';
 
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
-let token = null;
-
 //Rate limiter
 var limitFactory = function(){
     const LIMIT = 1000;
@@ -26,14 +24,6 @@ var limitFactory = function(){
 
 var Api = {
     limiter: limitFactory(),
-    ensureAuthenticated: async function()
-    {
-        token = await getApiToken();
-        if (!token) {
-            storePreAuthPage();
-            authRequest();
-        }
-    },
     getUser: async function(userId) {
         let response = await Api.limiter(async () => { return await fetch(API_ENDPOINT + 'users/' + userId, Api.getFetchOptions);});
         if (!response.ok) {

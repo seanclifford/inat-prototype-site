@@ -22,7 +22,6 @@
 
     <h2>Start here:</h2>
     <ol>
-      <li><input type="button" value='Authenticate' onclick='Api.ensureAuthenticated()'></li>
       <li>
         Choose data source to load users from:
         <ul>
@@ -58,9 +57,7 @@
   
     <script src="js/constants.js?v=1.0.0"></script>
     <script src="js/api.js?v=1.0.0"></script>
-    <script src="js/auth.js?v=1.0.0"></script>
     <script src="js/bulk_send_message.js?v=1.0.0"></script>
-    <script src="https://cdn.jsdelivr.net/npm/oauth-pkce@0.0.4/dist/index.min.js"></script>
     <script>
       async function loadUsers() {
         let userNamesCsv = document.getElementById("user_ids").value;
