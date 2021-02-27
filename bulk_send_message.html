@@ -34,6 +34,9 @@
           <li>OR Enter csv of observation ids<br/>
             <input type="text" id="observation_ids">
           </li>
+          <li>OR Enter project id to get members<br/>
+            <input type="text" id="project_id">
+          </li>
         </ul>
       </li>
       <li>
@@ -62,6 +65,7 @@
       async function loadUsers() {
         let userNamesCsv = document.getElementById("user_ids").value;
         let observationIdsCsv = document.getElementById("observation_ids").value;
+        let projectId = document.getElementById("project_id").value;
         let fileUpload = document.getElementById("fileUpload").files[0];
         if (fileUpload) {
           getUsersFromFile(fileUpload);
@@ -72,8 +76,11 @@
         else if (observationIdsCsv) {
           await getUsersByObservationsCsv(observationIdsCsv);
         }
+        else if (projectId) {
+          await getUsersByProjectMembers(projectId);
+        }
         else {
-          alert('Enter some user names or observation ids')
+          alert('Enter some user names or observation ids, observations file or project id')
         }
       }      
 

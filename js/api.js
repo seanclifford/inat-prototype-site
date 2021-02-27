@@ -37,6 +37,19 @@ var Api = {
             return body.results[0];
         }
     },
+    getProjectMembers: async function(projectId) {
+        let response = await Api.limiter(async () => { return await fetch(API_ENDPOINT + 'projects/' + projectId + '/members', Api.getFetchOptions);});
+        if (!response.ok) {
+            return {
+                status: 'ERROR',
+                message: `Could not load project members for project '${projectId}'`
+            }
+        }
+        else {
+            let body = await response.json();
+            return body.results;
+        }
+    },
     getObservations: async function(observationIds) {
         let response = await Api.limiter(async () => { return await fetch(API_ENDPOINT + 'observations/' + observationIds, Api.getFetchOptions);});
         if (!response.ok) {

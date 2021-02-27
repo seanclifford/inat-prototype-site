@@ -1,4 +1,4 @@
-let userIds = [];
+let users = [];
 
 function getUsersFromFile(fileUpload) {
     var reader = new FileReader();
@@ -17,6 +17,8 @@ async function getUsersByObservationsCsv(observationIdsCsv) {
 
 function getUsersByObservations(observations) {
     resetUserResults();
+    users = [];
+
     if (observations.status === 'ERROR'){
         setError(observations.message);
     }
@@ -36,6 +38,18 @@ function getUsersByObservations(observations) {
     }
 }
 
+async function getUsersByProjectMembers(projectId) {
+    resetUserResults();
+    users = [];
+
+    let projectMembers = await Api.getProjectMembers(projectId);
+    const projectUsers = projectMembers.map(member => member.user);
+
+    projectUsers.forEach(user => {
+        addUser(user);
+    });
+}
+
 async function getUsersByNamesCsv(userNamesCsv) {
     const userNames = userNamesCsv.split(',');
     await getUsersByNamesArray(userNames)
@@ -43,6 +57,7 @@ async function getUsersByNamesCsv(userNamesCsv) {
 
 async function getUsersByNamesArray(userNames) {
     resetUserResults();
+    users = [];
     
     for(let i = 0; i < userNames.length; i++) {
         let user = await Api.getUser(userNames[i])
@@ -56,7 +71,7 @@ async function getUsersByNamesArray(userNames) {
 }
 
 function addUser(user) {
-    userIds.push(user.id);
+    users.push(user);
     var userHandle = user.login;
     if(user.name) {
         userHandle += ` (${user.name})`;
@@ -68,8 +83,9 @@ function addUser(user) {
 }
 
 async function sendMessagesToUsers(subject, message, authToken){ 
-    let results = await Promise.all(userIds.map(async (userId) => {
-        return await Api.sendMessage(userId, subject, message, authToken);
+    let results = await Promise.all(users.map(async (user) => {
+        const userMessage = setMessageVariablesForUser(message, user);
+        return await Api.sendMessage(user.id, subject, userMessage, authToken);
     }));
 
     let errorResults = results.filter(result => result.status === 'ERROR');
@@ -81,4 +97,11 @@ async function sendMessagesToUsers(subject, message, authToken){
     }
     
     return sendMessageResult;
+}
+
+function setMessageVariablesForUser(message, user) {
+    let result = message.replace('[user]', user.login);
+    result = result.replace('[observation_count]', user.observation_count);
+
+    return result;
 }
