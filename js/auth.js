@@ -8,8 +8,7 @@ function authRequest()
                 storeVerifier(verifier);
                 const redirect =`${WEBSITE_ENDPOINT}oauth/authorize?client_id=${oauthApplicationId}&code_challenge=${challenge}&code_challenge_method=S256&redirect_uri=https%3A%2F%2Fseanclifford.github.io%2Finat-prototype-site%2Foauth_redirect.html&response_type=code`;
                 console.log(redirect);
-                alert(redirect);
-                //window.location.href = redirect;
+                window.location.href = redirect;
             }
       });
 }
