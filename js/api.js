@@ -63,6 +63,19 @@ var Api = {
             return body.results;
         }
     },
+    getSites: async function() {
+        let response = await Api.limiter(async () => { return await fetch(API_ENDPOINT + 'sites/', Api.getFetchOptions);});
+        if (!response.ok) {
+            return {
+                status: 'ERROR',
+                message: 'Could not load sites'
+            }
+        }
+        else {
+            let body = await response.json();
+            return body.results;
+        }
+    },
     sendMessage: async function(toUserId, subject, message, authToken) {
         let bodyObj = {
             "message": {

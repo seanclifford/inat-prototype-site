@@ -1,0 +1,40 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+  
+    <title>INat prototypes - Select default site</title>
+    <meta name="description" content="Prototypes for INaturalist">
+    <meta name="author" content="Sean Clifford">
+  
+    <link rel="stylesheet" href="css/styles.css?v=1.0">
+  
+  </head>
+  
+  <body>
+    <h1>Select the INaturalist site to use by default</h1>
+    This should be the one you're logged into at the moment.
+    <div id="all_sites"></div>
+
+    <script src="js/constants.js?v=1.0.0"></script>
+    <script src="js/api.js?v=1.0.0"></script>
+    <script src="js/site.js?v=1.0.0"></script>
+    <script>
+        (async () => {
+            clearSites();
+            let allSites = await getAllSites();
+            let currentSite = await getCurrentSite();
+            
+            allSites.forEach(site => {
+                addSite(site);
+            });
+        })();
+        
+        function addSite(site) {
+            let div = document.getElementById('all_sites');
+            div.innerHTML += `<img width='30px' src='${site.icon_url}'> ${site.name}<br/>`;
+        }
+    </script>
+  </body>
+</html>
