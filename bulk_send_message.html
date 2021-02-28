@@ -9,32 +9,31 @@
     <meta name="author" content="Sean Clifford">
   
     <link rel="stylesheet" href="css/styles.css?v=1.0">
-  
+    <style>
+        input[type=text] { width: 400px}
+        #message { min-height: 200px; width: 400px}
+        #auth_token { width: 800px}
+    </style>
   </head>
   
   <body>
     <h1>Bulk Send Messages prototype for INaturalist</h1>
-    <h2>TODO:</h2>
-    <ul>
-      <li>Authenticate properly</li>
-      <li>Replace tokens with dynamic values in messages. i.e. Hi @username! </li>
-    </ul>
-
+    
     <h2>Start here:</h2>
     <ol>
       <li>
         Choose data source to load users from:
         <ul>
-          <li>Enter csv of user ids<br/>
+          <li>Enter comma separated list of user ids. e.g. johnsmith736,khaleesi89<br/>
             <input type="text" id="user_ids">
           </li>
-          <li>OR load from observations json file<br/>
+          <li>OR load from observations export file (JSON format) to message observers.<br/>
             <input type="file" id="fileUpload" />
           </li>
-          <li>OR Enter csv of observation ids<br/>
+          <li>OR Enter comma separated list of observation ids to message observers.<br/>
             <input type="text" id="observation_ids">
           </li>
-          <li>OR Enter project id to get members<br/>
+          <li>OR Enter project id to load its members. This is in the url on the project page. e.g. stinkbugs-of-the-world<br/>
             <input type="text" id="project_id">
           </li>
         </ul>
@@ -49,14 +48,22 @@
       <li>Enter message <br/>
         <textarea id='message'></textarea>
       </li>
-      <li>Enter user session token. Go to <a href='https://inaturalist.nz/users/api_token' target="_blank">this page</a>, copy the api_token value without quotes, and paste it below:<br/>
+      <li>Enter user session token. Go to <a href='https://inaturalist.org/users/api_token' target="_blank">this page</a>, copy the api_token value without quotes, and paste it below:<br/>
         <input type="text" id="auth_token">
       </li>
       <li>
-        <input type="button" value='Send Messages' onclick='sendMessages()'><br/>
+        <input id="send" type="button" value='Send Messages' onclick='sendMessages()'><br/>
         <div id="send_result"></div>
       </li>
     </ol>
+
+    <br>
+    <br>
+    <h2>Still TODO:</h2>
+    <ul>
+      <li>Authenticate properly</li>
+      <li>Replace tokens with dynamic values in messages. i.e. Hi @username! </li>
+    </ul>
   
     <script src="js/constants.js?v=1.0.0"></script>
     <script src="js/api.js?v=1.0.0"></script>
@@ -81,6 +88,14 @@
         }
         else {
           alert('Enter some user names or observation ids, observations file or project id')
+        }
+
+        if(users) {
+          let sendButton = document.getElementById("send");
+          sendButton.value = `Send ${users.length} Message`
+          if (users.length > 1){
+            sendButton.value += 's'
+          }
         }
       }      
 

@@ -5,24 +5,24 @@
 
 body {
     background:
-        linear-gradient(-90deg, rgba(0,0,0,.05) 1px, transparent 1px),
-        linear-gradient(rgba(0,0,0,.05) 1px, transparent 1px), 
-        linear-gradient(-90deg, rgba(0, 0, 0, .04) 1px, transparent 1px),
-        linear-gradient(rgba(0,0,0,.04) 1px, transparent 1px),
-        linear-gradient(transparent 3px, #f2f2f2 3px, #f2f2f2 78px, transparent 78px),
-        linear-gradient(-90deg, #aaa 1px, transparent 1px),
-        linear-gradient(-90deg, transparent 3px, #f2f2f2 3px, #f2f2f2 78px, transparent 78px),
-        linear-gradient(#aaa 1px, transparent 1px),
-        #f2f2f2;
+        linear-gradient(-90deg, rgba(95,95,95,.05) 1px, transparent 1px),
+        linear-gradient(rgba(95,95,95,.05) 1px, transparent 1px), 
+        linear-gradient(-90deg, rgba(95,95,95, .04) 1px, transparent 1px),
+        linear-gradient(rgba(95,95,95,.04) 1px, transparent 1px),
+        linear-gradient(transparent 3px, #f2f2f2 3px, #f2f2f2 158px, transparent 158px),
+        linear-gradient(-90deg, #ccc 1px, transparent 1px),
+        linear-gradient(-90deg, transparent 3px, #f2f2f2 3px, #f2f2f2 158px, transparent 158px),
+        linear-gradient(#ccc 1px, transparent 1px),
+        #ffffff;
     background-size:
-        4px 4px,
-        4px 4px,
-        80px 80px,
-        80px 80px,
-        80px 80px,
-        80px 80px,
-        80px 80px,
-        80px 80px;
+        16px 16px,
+        16px 16px,
+        160px 160px,
+        160px 160px,
+        160px 160px,
+        160px 160px,
+        160px 160px,
+        160px 160px;
 }
 
 li {
