@@ -86,7 +86,7 @@ async function sendMessagesToUsers(subject, message, authToken, callback){
     let currMessage = 0;
     let results = await Promise.all(users.map(async (user) => {
         const userMessage = setMessageVariablesForUser(message, user);
-        let result = await Api.sendMessage(user.id, subject, userMessage, authToken);
+        let result = await Api.sendMessage(user, subject, userMessage, authToken);
         callback(user, ++currMessage, users.length);
         return result;
     }));

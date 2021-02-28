@@ -76,7 +76,7 @@ var Api = {
             return body.results;
         }
     },
-    sendMessage: async function(toUserId, subject, message, authToken) {
+    sendMessage: async function(toUser, subject, message, authToken) {
         //replace logic with comment to test without sending messages.
         //await Api.limiter(async () => {await delay(500);});
         //return { 
@@ -84,7 +84,7 @@ var Api = {
         //       };
         let bodyObj = {
             "message": {
-                "to_user_id": toUserId,
+                "to_user_id": toUser.id,
                 "thread_id": 0,
                 "subject": subject,
                 "body": message
@@ -101,7 +101,7 @@ var Api = {
             return {
                 
                 status: 'ERROR',
-                message: `Could not send message to user '${toUserId}'. ${errorMessage??''}`
+                message: `Could not send message to user '${toUser.login}'. ${errorMessage??''}`
             }
         }
     },
