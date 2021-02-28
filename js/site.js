@@ -1,7 +1,7 @@
 async function getCurrentSite(){
     let current_site = localStorage.getItem('current_site');
     if (current_site) {
-        return current_site;
+        return JSON.parse(current_site);
     }
     
     let allSites = await getAllSites();
@@ -12,17 +12,17 @@ async function getCurrentSite(){
 }
 
 function setCurrentSite(site) {
-    localStorage.getItem('current_site', site);
+    localStorage.setItem('current_site', JSON.stringify(site));
 }
 
 async function getAllSites() {
     let allSites = sessionStorage.getItem('all_sites');
     if (allSites) {
-        return allSites;
+        return JSON.parse(allSites);
     }
 
     allSites = await Api.getSites();
-    sessionStorage.setItem('all_sites', allSites);
+    sessionStorage.setItem('all_sites', JSON.stringify(allSites));
 
     return allSites;
 }
