@@ -11,6 +11,12 @@ async function getCurrentSite(){
     return current_site;
 }
 
+async function setCurrentSiteById(siteId) {
+    let allSites = await getAllSites();
+    let currentSite = allSites.find(site => site.id == siteId);
+    setCurrentSite(currentSite);
+}
+
 function setCurrentSite(site) {
     localStorage.setItem('current_site', JSON.stringify(site));
 }

@@ -16,24 +16,38 @@
     <h1>Select the INaturalist site to use by default</h1>
     This should be the one you're logged into at the moment.
     <div id="all_sites"></div>
+    <br>
+    <input type="button" id="apply_current_site" value="Apply changes" onclick="saveCurrentSite()">
 
     <script src="js/constants.js?v=1.0.0"></script>
     <script src="js/api.js?v=1.0.0"></script>
     <script src="js/site.js?v=1.0.0"></script>
     <script>
         (async () => {
-            //clearSites();
             let allSites = await getAllSites();
             let currentSite = await getCurrentSite();
             
             allSites.forEach(site => {
-                addSite(site);
+                let isCurrent = site.id == currentSite.id;
+                addSite(site, isCurrent);
             });
         })();
         
-        function addSite(site) {
+        function addSite(site, isCurrent) {
             let div = document.getElementById('all_sites');
-            div.innerHTML += `<img width='30px' src='${site.icon_url}'> ${site.name}<br/>`;
+            
+            div.innerHTML += `<label><input type="radio" name="selected_site" value='${site.id}' ${isCurrent?"checked":""}><img width='30px' src='${site.icon_url}'> ${site.name}</label><br/>`;
+        }
+
+        async function saveCurrentSite()
+        {
+            let selectedRadio = document.querySelector("input[name=selected_site]:checked");
+            if (selectedRadio) {
+                let currentSiteId = selectedRadio.value;
+                await setCurrentSiteById(currentSiteId);
+            }
+            let currentSite = await getCurrentSite();
+            alert(`This site will use ${currentSite.name} for iNaturalist interactions`);
         }
     </script>
   </body>

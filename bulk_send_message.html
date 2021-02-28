@@ -27,10 +27,10 @@
           <li>Enter comma separated list of user ids. e.g. johnsmith736,khaleesi89<br/>
             <input type="text" id="user_ids">
           </li>
-          <li>OR load from observations export file (JSON format) to message observers.<br/>
+          <li>OR load from observations export file (JSON format) to message the observers of the observations.<br/>
             <input type="file" id="fileUpload" />
           </li>
-          <li>OR Enter comma separated list of observation ids to message observers.<br/>
+          <li>OR Enter comma separated list of observation ids to message the observers of the observations.<br/>
             <input type="text" id="observation_ids">
           </li>
           <li>OR Enter project id to load its members. This is in the url on the project page. e.g. stinkbugs-of-the-world<br/>
@@ -48,7 +48,7 @@
       <li>Enter message <br/>
         <textarea id='message'></textarea>
       </li>
-      <li>Enter user session token. Go to <a href='https://inaturalist.org/users/api_token' target="_blank">this page</a>, copy the api_token value without quotes, and paste it below:<br/>
+      <li>Enter user session token. Go to <a id="token_link" href='https://inaturalist.org/users/api_token' target="_blank">this page</a>, copy the api_token value without quotes, and paste it below:<br/>
         <input type="text" id="auth_token">
       </li>
       <li>
@@ -68,7 +68,14 @@
     <script src="js/constants.js?v=1.0.0"></script>
     <script src="js/api.js?v=1.0.0"></script>
     <script src="js/bulk_send_message.js?v=1.0.0"></script>
+    <script src="js/site.js?v=1.0.0"></script>
     <script>
+        (async () => {
+            let currentSite = await getCurrentSite();
+            let tokenLink = document.getElementById("token_link");
+            tokenLink.href = currentSite.url + '/users/api_token';
+        })();
+
       async function loadUsers() {
         let userNamesCsv = document.getElementById("user_ids").value;
         let observationIdsCsv = document.getElementById("observation_ids").value;
