@@ -77,6 +77,11 @@ var Api = {
         }
     },
     sendMessage: async function(toUserId, subject, message, authToken) {
+        //replace logic with comment to test without sending messages.
+        //await Api.limiter(async () => {await delay(500);});
+        //return { 
+        //            status: 'OK',
+        //       };
         let bodyObj = {
             "message": {
                 "to_user_id": toUserId,

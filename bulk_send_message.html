@@ -100,7 +100,7 @@
         if(users) {
           let sendButton = document.getElementById("send");
           sendButton.value = `Send ${users.length} Message`
-          if (users.length > 1){
+          if (users.length != 1){
             sendButton.value += 's'
           }
         }
@@ -110,11 +110,17 @@
         let subject = document.getElementById('subject').value;
         let message = document.getElementById('message').value;
         let authToken = document.getElementById('auth_token').value;
-        
-        const result = await sendMessagesToUsers(subject, message, authToken);
-        
         let div = document.getElementById('send_result');
+        div.innerHTML = '<p>Sending...</p>';
+
+        const result = await sendMessagesToUsers(subject, message, authToken, onMessageSend);
+        
         div.innerHTML = `<p>${result}</p>`;
+      }
+
+      function onMessageSend(user, currentNum, totalCount) {
+        let div = document.getElementById('send_result');
+        div.innerHTML = `<p>Sent message ${currentNum} of ${totalCount} to user ${user.login}...</p>`;
       }
 
       function setError(error) {

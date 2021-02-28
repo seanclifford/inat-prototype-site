@@ -82,15 +82,18 @@ function addUser(user) {
     });
 }
 
-async function sendMessagesToUsers(subject, message, authToken){ 
+async function sendMessagesToUsers(subject, message, authToken, callback){ 
+    let currMessage = 0;
     let results = await Promise.all(users.map(async (user) => {
         const userMessage = setMessageVariablesForUser(message, user);
-        return await Api.sendMessage(user.id, subject, userMessage, authToken);
+        let result = await Api.sendMessage(user.id, subject, userMessage, authToken);
+        callback(user, ++currMessage, users.length);
+        return result;
     }));
 
     let errorResults = results.filter(result => result.status === 'ERROR');
     let successCount = results.length - errorResults.length;
-    let sendMessageResult = `Successfully sent ${successCount} out of ${results.length} message.`;
+    let sendMessageResult = `Successfully sent ${successCount} out of ${results.length} messages.`;
     if (errorResults.length > 0) {
         sendMessageResult += ' ERRORS:';
         errorResults.forEach(error => sendMessageResult += error.message + ' ');
