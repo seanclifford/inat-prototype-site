@@ -13,11 +13,21 @@
         input[type=text] { width: 400px}
         #message { min-height: 200px; width: 400px}
         #auth_token { width: 800px}
+
+        .affiliation {
+          float: right;
+        }
+        .affiliation img {
+          vertical-align: middle;
+        }
     </style>
   </head>
   
   <body>
-    <h1>Bulk Send Messages prototype for INaturalist</h1>
+    
+    <span class="affiliation"><img id="site_img" width="30" height="30">&nbsp;<span id="site_title"></span> (<a href="site_selection.html">change</a>) </span>
+    
+    <h1>Bulk Send Messages prototype for INaturalist</h1> 
     
     <h2>Start here:</h2>
     <ol>
@@ -59,7 +69,7 @@
 
     <br>
     <br>
-    <h2>Still TODO:</h2>
+    <h2>Still to work on for this prototype:</h2>
     <ul>
       <li>Authenticate properly</li>
       <li>Replace tokens with dynamic values in messages. i.e. Hi @username! </li>
@@ -72,7 +82,13 @@
     <script>
         (async () => {
             let currentSite = await getCurrentSite();
+            
+            let siteImg = document.getElementById("site_img");
+            let siteTitle = document.getElementById("site_title");
             let tokenLink = document.getElementById("token_link");
+
+            siteImg.src = currentSite.icon_url;
+            siteTitle.innerText = currentSite.site_name_short;
             tokenLink.href = currentSite.url + '/users/api_token';
         })();
 
