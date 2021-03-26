@@ -13,8 +13,9 @@
   </head>
   
   <body>
-    <h1>Select the INaturalist site to use by default</h1>
-    This should be the one you're logged into at the moment.
+    <h1>Select the iNaturalist site to use by default</h1>
+    Changing this, will change the links on this site to point to the iNaturalist website you're normally logged into.<br>
+    For most people, this will be the main inaturalist.org site (the first one).
     <div id="all_sites"></div>
     <br>
     <input type="button" id="apply_current_site" value="Apply changes" onclick="saveCurrentSite()">
@@ -36,7 +37,12 @@
         function addSite(site, isCurrent) {
             let div = document.getElementById('all_sites');
             
-            div.innerHTML += `<label><input type="radio" name="selected_site" value='${site.id}' ${isCurrent?"checked":""}><img width='30px' src='${site.icon_url}'> ${site.name}</label><br/>`;
+            div.innerHTML += `<label>
+              <input type="radio" name="selected_site" value='${site.id}' ${isCurrent?"checked":""}>
+              <img width='30px' src='${site.icon_url}'> ${site.name}
+            </label> &nbsp;&nbsp;
+            <span style="font-size:70%">(<a href="${site.url}" target="_blank">${site.url}</a>)</span>
+            <br/>`;
         }
 
         async function saveCurrentSite()
