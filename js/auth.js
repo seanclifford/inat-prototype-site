@@ -98,7 +98,7 @@ async function getApiToken() {
     }
     else
     {
-        const body = response.json();
+        const body = await response.json();
         return body.api_token;
     }
 }
