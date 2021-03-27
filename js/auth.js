@@ -27,7 +27,7 @@ function storeVerifier(verifier) {
 }
 
 function getVerifier() {
-    localStorage.getItem('auth_verifier');
+    return localStorage.getItem('auth_verifier');
 }
 
 function clearVerifier() {
@@ -39,7 +39,7 @@ function storeAccessToken() {
 }
 
 function getAccessToken() {
-    localStorage.getItem('auth_access_token');
+    return localStorage.getItem('auth_access_token');
 }
 
 async function performTokenRequest(auth_code) {
