@@ -23,15 +23,15 @@ function redirectToPreAuthLocation() {
 }
 
 function storeVerifier(verifier) {
-    sessionStorage.setItem('auth_verifier', verifier);
+    localStorage.setItem('auth_verifier', verifier);
 }
 
 function getVerifier() {
-    sessionStorage.getItem('auth_verifier');
+    localStorage.getItem('auth_verifier');
 }
 
 function clearVerifier() {
-    sessionStorage.removeItem('auth_verifier');
+    localStorage.removeItem('auth_verifier');
 }
 
 function storeAccessToken() {
