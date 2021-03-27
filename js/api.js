@@ -133,9 +133,13 @@ var Api = {
         }
     },
     getAuthFetchOptions: function(authToken) {
-        let fetchOptions = {'Authorization': authToken};
-        Object.assign(fetchOptions, this.getFetchOptions);
-        return fetchOptions;
+        return {
+            method: 'GET',
+            headers: {
+                'User-Agent': USER_AGENT,
+                'Authorization': authToken
+            }
+        };
     },
     postFetchOptions: function(bodyObj, authToken) {
         return {
