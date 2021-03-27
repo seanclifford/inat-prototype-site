@@ -29,7 +29,7 @@ var Api = {
         token = await getApiToken();
         if (!token) {
             storePreAuthPage();
-            authRequest();
+            await authRequest();
         }
     },
     getUser: async function(userId) {
@@ -113,11 +113,29 @@ var Api = {
             }
         }
     },
+    getAuthenticatedUser: async function(authToken) {
+        let response = await Api.limiter(async () => { return await fetch(API_ENDPOINT + 'users/me', Api.getAuthFetchOptions(authToken));});
+        if (!response.ok) {
+            return {
+                status: 'ERROR',
+                message: 'Could not find authenticated user.'
+            }
+        }
+        else {
+            let body = await response.json();
+            return body.results[0];
+        }
+    },
     getFetchOptions: {
         method: 'GET',
         headers: {
             'User-Agent': USER_AGENT
         }
+    },
+    getAuthFetchOptions: function(authToken) {
+        let fetchOptions = {'Authorization': authToken};
+        Object.assign(fetchOptions, this.getFetchOptions);
+        return fetchOptions;
     },
     postFetchOptions: function(bodyObj, authToken) {
         return {

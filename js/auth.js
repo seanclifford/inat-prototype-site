@@ -1,7 +1,7 @@
 const oauthApplicationId = '5201b81280434411f4f45034781257d6d4ff22124b7f60936d0d5efc114f25c0';
 const WEBSITE_ENDPOINT = 'https://www.inaturalist.nz/'
 
-function authRequest()
+async function authRequest()
 {
     const verifier = generateRandomString();
     storeVerifier(verifier);
@@ -58,7 +58,7 @@ async function performTokenRequest(auth_code) {
         body: JSON.stringify(payload)
     };
     console.log(JSON.stringify(postOptions)) //Debugging - REMOVE ME
-    const response = await fetch(WEBSITE_ENDPOINT + 'oauth/token', postOptions);
+    const response = Api.limiter(async () => {return await fetch(WEBSITE_ENDPOINT + 'oauth/token', postOptions);});
     
     if (!response.ok)
     {
@@ -86,7 +86,7 @@ async function getApiToken() {
             'Authorization': `Bearer ${accessToken}`
         }
     };
-    const response = await fetch(WEBSITE_ENDPOINT + 'users/api_token', getOptions);
+    const response = Api.limiter(async () => {await fetch(WEBSITE_ENDPOINT + 'users/api_token', getOptions);});
 
     if (!response.ok)
     {
