@@ -90,7 +90,7 @@ async function getApiToken() {
             'Authorization': `Bearer ${accessToken}`
         }
     };
-    const response = await Api.limiter(async () => {await fetch(WEBSITE_ENDPOINT + 'users/api_token', getOptions);});
+    const response = await Api.limiter(async () => {return await fetch(WEBSITE_ENDPOINT + 'users/api_token', getOptions);});
 
     if (!response.ok)
     {
