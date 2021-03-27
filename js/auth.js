@@ -1,5 +1,6 @@
 const oauthApplicationId = '5201b81280434411f4f45034781257d6d4ff22124b7f60936d0d5efc114f25c0';
 const WEBSITE_ENDPOINT = 'https://www.inaturalist.org/'
+const redirect_uri = 'https://seanclifford.github.io/inat-prototype-site/oauth_redirect.html'
 
 async function authRequest()
 {
@@ -8,7 +9,7 @@ async function authRequest()
 
     const challenge = await pkceChallengeFromVerifier(verifier);
 
-    const redirect =`${WEBSITE_ENDPOINT}oauth/authorize?client_id=${oauthApplicationId}&code_challenge=${challenge}&code_challenge_method=S256&redirect_uri=https%3A%2F%2Fseanclifford.github.io%2Finat-prototype-site%2Foauth_redirect.html&response_type=code`;
+    const redirect =`${WEBSITE_ENDPOINT}oauth/authorize?client_id=${oauthApplicationId}&code_challenge=${challenge}&code_challenge_method=S256&redirect_uri=${encodeURIComponent(redirect_uri)}&response_type=code`;
     window.location.href = redirect;
 }
 
@@ -43,11 +44,14 @@ function getAccessToken() {
 
 async function performTokenRequest(auth_code) {
 
+    const verifier = getVerifier();
+    console.log('VERIFIER:' + verifier);
     const payload = {
         client_id: oauthApplicationId,
         code: auth_code,
         grant_type: "authorization_code",
-        code_verifier: getVerifier()
+        redirect_uri: redirect_uri,
+        code_verifier: verifier
     }
     const postOptions = {
         method: 'POST',
@@ -68,7 +72,7 @@ async function performTokenRequest(auth_code) {
     {
         const tokenResponse = await response.json();
         storeAccessToken(tokenResponse.access_token);
-        clearVerifier();
+        //clearVerifier();
     }
 }
 
