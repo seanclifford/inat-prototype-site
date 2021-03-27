@@ -1,5 +1,5 @@
 const oauthApplicationId = '5201b81280434411f4f45034781257d6d4ff22124b7f60936d0d5efc114f25c0';
-const WEBSITE_ENDPOINT = 'https://www.inaturalist.nz/'
+const WEBSITE_ENDPOINT = 'https://www.inaturalist.org/'
 
 async function authRequest()
 {
