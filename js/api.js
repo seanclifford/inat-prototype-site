@@ -24,6 +24,14 @@ var limitFactory = function(){
 
 var Api = {
     limiter: limitFactory(),
+    ensureAuthenticated: async function()
+    {
+        token = await getApiToken();
+        if (!token) {
+            storePreAuthPage();
+            authRequest();
+        }
+    },
     getUser: async function(userId) {
         let response = await Api.limiter(async () => { return await fetch(API_ENDPOINT + 'users/' + userId, Api.getFetchOptions);});
         if (!response.ok) {
