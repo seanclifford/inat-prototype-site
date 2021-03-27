@@ -98,7 +98,8 @@ async function getApiToken() {
     }
     else
     {
-        return response.api_token;
+        const body = response.body;
+        return body.api_token;
     }
 }
 
