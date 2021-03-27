@@ -62,7 +62,7 @@ async function performTokenRequest(auth_code) {
         body: JSON.stringify(payload)
     };
     console.log(JSON.stringify(postOptions)) //Debugging - REMOVE ME
-    const response = Api.limiter(async () => {return await fetch(WEBSITE_ENDPOINT + 'oauth/token', postOptions);});
+    const response = await Api.limiter(async () => {return await fetch(WEBSITE_ENDPOINT + 'oauth/token', postOptions);});
     
     if (!response.ok)
     {
@@ -90,7 +90,7 @@ async function getApiToken() {
             'Authorization': `Bearer ${accessToken}`
         }
     };
-    const response = Api.limiter(async () => {await fetch(WEBSITE_ENDPOINT + 'users/api_token', getOptions);});
+    const response = await Api.limiter(async () => {await fetch(WEBSITE_ENDPOINT + 'users/api_token', getOptions);});
 
     if (!response.ok)
     {
