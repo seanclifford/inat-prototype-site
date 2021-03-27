@@ -34,8 +34,8 @@ function clearVerifier() {
     localStorage.removeItem('auth_verifier');
 }
 
-function storeAccessToken() {
-    localStorage.setItem('auth_access_token', verifier);
+function storeAccessToken(accessToken) {
+    localStorage.setItem('auth_access_token', accessToken);
 }
 
 function getAccessToken() {
