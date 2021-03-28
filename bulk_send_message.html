@@ -78,6 +78,7 @@
     <script src="js/constants.js?v=1.0.0"></script>
     <script src="js/api.js?v=1.0.0"></script>
     <script src="js/bulk_send_message.js?v=1.0.0"></script>
+    <script src="js/auth.js?v=1.0.0"></script>
     <script src="js/site.js?v=1.0.0"></script>
     <script>
         (async () => {
@@ -85,11 +86,9 @@
             
             let siteImg = document.getElementById("site_img");
             let siteTitle = document.getElementById("site_title");
-            let tokenLink = document.getElementById("token_link");
 
             siteImg.src = currentSite.icon_url;
             siteTitle.innerText = currentSite.site_name_short;
-            tokenLink.href = currentSite.url + '/users/api_token';
         })();
 
       async function authenticate() {
