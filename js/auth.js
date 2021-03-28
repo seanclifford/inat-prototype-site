@@ -1,6 +1,5 @@
-const oauthApplicationId = '5201b81280434411f4f45034781257d6d4ff22124b7f60936d0d5efc114f25c0';
-const WEBSITE_ENDPOINT = 'https://www.inaturalist.org/'
-const redirect_uri = 'https://seanclifford.github.io/inat-prototype-site/oauth_redirect.html'
+const OAUTH_APPLICATION_ID = '5201b81280434411f4f45034781257d6d4ff22124b7f60936d0d5efc114f25c0';
+const REDIRECT_URI = 'https://seanclifford.github.io/inat-prototype-site/oauth_redirect.html'
 
 async function authRequest()
 {
@@ -9,7 +8,9 @@ async function authRequest()
 
     const challenge = await pkceChallengeFromVerifier(verifier);
 
-    const redirect =`${WEBSITE_ENDPOINT}oauth/authorize?client_id=${oauthApplicationId}&code_challenge=${challenge}&code_challenge_method=S256&redirect_uri=${encodeURIComponent(redirect_uri)}&response_type=code`;
+    const currentSite = await getCurrentSite();
+
+    const redirect =`${currentSite.url}oauth/authorize?client_id=${OAUTH_APPLICATION_ID}&code_challenge=${challenge}&code_challenge_method=S256&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code`;
     window.location.href = redirect;
 }
 
@@ -74,14 +75,15 @@ async function performTokenRequest(auth_code) {
 
     const verifier = getVerifier();
     const payload = {
-        client_id: oauthApplicationId,
+        client_id: OAUTH_APPLICATION_ID,
         code: auth_code,
         grant_type: "authorization_code",
-        redirect_uri: redirect_uri,
+        redirect_uri: REDIRECT_URI,
         code_verifier: verifier
     }
+    const currentSite = await getCurrentSite();
     const postOptions = Api.postFetchOptions(payload);
-    const response = await Api.limiter(async () => {return await fetch(WEBSITE_ENDPOINT + 'oauth/token', postOptions);});
+    const response = await Api.limiter(async () => {return await fetch(currentSite.url + 'oauth/token', postOptions);});
     
     if (!response.ok)
     {
@@ -101,8 +103,9 @@ async function requestApiToken() {
     if (!accessToken) {
         return null;
     }
+    const currentSite = await getCurrentSite();
     const getOptions = Api.getAuthFetchOptions(`Bearer ${accessToken}`);
-    const response = await Api.limiter(async () => {return await fetch(WEBSITE_ENDPOINT + 'users/api_token', getOptions);});
+    const response = await Api.limiter(async () => {return await fetch(currentSite.url + 'users/api_token', getOptions);});
 
     if (!response.ok)
     {
