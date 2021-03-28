@@ -14,10 +14,9 @@
   
   <body>
     <h1>Testing page for authentication</h1>
-    <input type="button" id="check" value="Check" onclick="populateAuthenticatedUser()">
     <div id="authenticated_user"></div>
     <br>
-    <input type="button" id="authenticate" value="Authenticate!" onclick="authenticate()">
+    <input type="button" id="authenticate" value="Log in / authenticate this site" onclick="Api.ensureAuthenticated()">
     <br>
     <br>
     <input type="button" id="logout" value="Logout" onclick="clearAllAuthenticationState()">
@@ -26,9 +25,9 @@
     <script src="js/api.js?v=1.0.0"></script>
     <script src="js/auth.js?v=1.0.0"></script>
     <script>
-        /*(async () => {
+        (async () => {
             await populateAuthenticatedUser();
-        })();*/
+        })();
         
         async function populateAuthenticatedUser() {
             let div = document.getElementById('authenticated_user');
@@ -52,21 +51,6 @@
             else {
                 div.innerHTML = '<i>No user is authenticated</i>'
             }
-        }
-
-        async function getAuthenticatedUser() {
-            const apiToken = await getApiToken();
-
-            if (apiToken) {
-                return await Api.getAuthenticatedUser(apiToken)
-            } 
-
-            return null;
-        }
-
-        async function authenticate()
-        {
-            Api.ensureAuthenticated();
         }
     </script>
   </body>
