@@ -10,7 +10,7 @@ async function authRequest()
 
     const currentSite = await getCurrentSite();
 
-    const redirect =`${currentSite.url}oauth/authorize?client_id=${OAUTH_APPLICATION_ID}&code_challenge=${challenge}&code_challenge_method=S256&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code`;
+    const redirect =`${currentSite.url}/oauth/authorize?client_id=${OAUTH_APPLICATION_ID}&code_challenge=${challenge}&code_challenge_method=S256&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code`;
     window.location.href = redirect;
 }
 
@@ -83,7 +83,7 @@ async function performTokenRequest(auth_code) {
     }
     const currentSite = await getCurrentSite();
     const postOptions = Api.postFetchOptions(payload);
-    const response = await Api.limiter(async () => {return await fetch(currentSite.url + 'oauth/token', postOptions);});
+    const response = await Api.limiter(async () => {return await fetch(currentSite.url + '/oauth/token', postOptions);});
     
     if (!response.ok)
     {
@@ -105,7 +105,7 @@ async function requestApiToken() {
     }
     const currentSite = await getCurrentSite();
     const getOptions = Api.getAuthFetchOptions(`Bearer ${accessToken}`);
-    const response = await Api.limiter(async () => {return await fetch(currentSite.url + 'users/api_token', getOptions);});
+    const response = await Api.limiter(async () => {return await fetch(currentSite.url + '/users/api_token', getOptions);});
 
     if (!response.ok)
     {
