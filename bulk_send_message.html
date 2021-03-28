@@ -12,7 +12,6 @@
     <style>
         input[type=text] { width: 400px}
         #message { min-height: 200px; width: 400px}
-        #auth_token { width: 800px}
 
         .affiliation {
           float: right;
@@ -31,6 +30,10 @@
     
     <h2>Start here:</h2>
     <ol>
+      <li>
+        <input type="button" value='Check authentication' onclick='authenticate()'>
+        <div id="authenticated_user"></div>
+      </li>
       <li>
         Choose data source to load users from:
         <ul>
@@ -58,9 +61,6 @@
       <li>Enter message <br/>
         <textarea id='message'></textarea>
       </li>
-      <li>Enter user session token. Go to <a id="token_link" href='https://inaturalist.org/users/api_token' target="_blank">this page</a>, copy the api_token value without quotes, and paste it below:<br/>
-        <input type="text" id="auth_token">
-      </li>
       <li>
         <input id="send" type="button" value='Send Messages' onclick='sendMessages()'><br/>
         <div id="send_result"></div>
@@ -71,7 +71,7 @@
     <br>
     <h2>Still to work on for this prototype:</h2>
     <ul>
-      <li>Authenticate properly</li>
+      <li>Allow remove individual users</li>
       <li>Replace tokens with dynamic values in messages. i.e. Hi @username! </li>
     </ul>
   
@@ -91,6 +91,30 @@
             siteTitle.innerText = currentSite.site_name_short;
             tokenLink.href = currentSite.url + '/users/api_token';
         })();
+
+      async function authenticate() {
+        await Api.ensureAuthenticated();
+        const div = document.getElementById('authenticated_user');
+            
+        const user = await getAuthenticatedUser();
+
+        if (user) {
+          div.innerHTML = "Logged in as: ";
+          
+          if (user.icon) {
+            div.innerHTML += `<img width='30' src='${user.icon}'> `;
+          }
+
+          name = user.login;
+          if (user.name) {
+            name += ` - <i>${user.name}</i>`
+          }
+          div.innerHTML += name;
+        }
+        else {
+          div.innerHTML = '<i>Something went wrong here.</i>'
+        }
+      }
 
       async function loadUsers() {
         let userNamesCsv = document.getElementById("user_ids").value;
@@ -125,11 +149,11 @@
       async function sendMessages(){ 
         let subject = document.getElementById('subject').value;
         let message = document.getElementById('message').value;
-        let authToken = document.getElementById('auth_token').value;
+        let apiToken = await getApiToken();
         let div = document.getElementById('send_result');
         div.innerHTML = '<p>Sending...</p>';
 
-        const result = await sendMessagesToUsers(subject, message, authToken, onMessageSend);
+        const result = await sendMessagesToUsers(subject, message, apiToken, onMessageSend);
         
         div.innerHTML = `<p>${result}</p>`;
       }
