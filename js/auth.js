@@ -19,7 +19,7 @@ function storePreAuthPage() {
 
 function redirectToPreAuthLocation() {
     const priorLocation = sessionStorage.getItem('pre_auth_location');
-    window.location.href = priorLocation;
+    window.location.replace(priorLocation);
 }
 
 function storeVerifier(verifier) {
