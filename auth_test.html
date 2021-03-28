@@ -32,8 +32,19 @@
             
             let user = await getAuthenticatedUser();
 
+            
             if (user) {
-                div.innerHTML = `<img width='30px' src='${user.icon_url}'> ${user.name}`;
+                div.innerHTML = "Logged in as: ";
+                
+                if (user.icon) {
+                    div.innerHTML += `<img width='30' src='${user.icon}'> `;
+                }
+
+                name = user.login;
+                if (user.name) {
+                    name += ` - <i>${user.name}</i>`
+                }
+                div.innerHTML += name;
             }
             else {
                 div.innerHTML = '<i>No user is authenticated</i>'

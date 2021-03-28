@@ -23,15 +23,15 @@ function redirectToPreAuthLocation() {
 }
 
 function storeVerifier(verifier) {
-    localStorage.setItem('auth_verifier', verifier);
+    sessionStorage.setItem('auth_verifier', verifier);
 }
 
 function getVerifier() {
-    return localStorage.getItem('auth_verifier');
+    return sessionStorage.getItem('auth_verifier');
 }
 
 function clearVerifier() {
-    localStorage.removeItem('auth_verifier');
+    sessionStorage.removeItem('auth_verifier');
 }
 
 function storeAccessToken(accessToken) {
@@ -42,10 +42,13 @@ function getAccessToken() {
     return localStorage.getItem('auth_access_token');
 }
 
+function clearAccessToken() {
+    localStorage.removeItem('auth_access_token');
+}
+
 async function performTokenRequest(auth_code) {
 
     const verifier = getVerifier();
-    console.log('VERIFIER:' + verifier);
     const payload = {
         client_id: oauthApplicationId,
         code: auth_code,
@@ -61,7 +64,6 @@ async function performTokenRequest(auth_code) {
         },
         body: JSON.stringify(payload)
     };
-    console.log(JSON.stringify(postOptions)) //Debugging - REMOVE ME
     const response = await Api.limiter(async () => {return await fetch(WEBSITE_ENDPOINT + 'oauth/token', postOptions);});
     
     if (!response.ok)
@@ -72,11 +74,21 @@ async function performTokenRequest(auth_code) {
     {
         const tokenResponse = await response.json();
         storeAccessToken(tokenResponse.access_token);
-        //clearVerifier();
+        clearVerifier();
     }
 }
 
 async function getApiToken() {
+    let apiToken = sessionStorage.getItem('api_token');
+
+    if (apiToken) {
+        return apiToken;
+    }
+
+    return await requestApiToken();
+}
+
+async function requestApiToken() {
     const accessToken = getAccessToken();
 
     if (!accessToken) {
@@ -99,7 +111,9 @@ async function getApiToken() {
     else
     {
         const body = await response.json();
-        return body.api_token;
+        apiToken = body.api_token;
+        sessionStorage.setItem('api_token', apiToken);
+        return apiToken;
     }
 }
 
