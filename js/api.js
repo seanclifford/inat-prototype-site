@@ -98,7 +98,7 @@ var Api = {
                 "body": message
             }
         };
-        let response = await Api.limiter(async () => { return await fetch(API_ENDPOINT + 'messages', Api.postFetchOptions(bodyObj, authToken));});
+        let response = await Api.limiter(async () => { return await fetch(API_ENDPOINT + 'messages', Api.postAuthFetchOptions(bodyObj, authToken));});
         if (response.ok) {
             return {status: 'OK'}
         }
@@ -141,7 +141,17 @@ var Api = {
             }
         };
     },
-    postFetchOptions: function(bodyObj, authToken) {
+    postFetchOptions: function(bodyObj) {
+        return {
+            method: 'POST',
+            headers: {
+                'User-Agent': USER_AGENT,
+                'Content-Type': 'application/json;charset=utf-8',
+            },
+            body: JSON.stringify(bodyObj)
+        };
+    },
+    postAuthFetchOptions: function(bodyObj, authToken) {
         return {
             method: 'POST',
             headers: {

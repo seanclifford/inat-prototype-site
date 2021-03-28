@@ -46,6 +46,30 @@ function clearAccessToken() {
     localStorage.removeItem('auth_access_token');
 }
 
+async function getApiToken() {
+    let apiToken = sessionStorage.getItem('api_token');
+
+    if (apiToken) {
+        return apiToken;
+    }
+
+    return await requestApiToken();
+}
+
+function setApiToken(apiToken){
+    sessionStorage.setItem('api_token', apiToken);
+}
+
+function clearApiToken() {
+    sessionStorage.removeItem('api_token');
+}
+
+function clearAllAuthenticationState() {
+    clearVerifier();
+    clearAccessToken();
+    clearApiToken();
+}
+
 async function performTokenRequest(auth_code) {
 
     const verifier = getVerifier();
@@ -53,17 +77,10 @@ async function performTokenRequest(auth_code) {
         client_id: oauthApplicationId,
         code: auth_code,
         grant_type: "authorization_code",
-        redirect_uri: redirect_uri,
+        //redirect_uri: redirect_uri,
         code_verifier: verifier
     }
-    const postOptions = {
-        method: 'POST',
-        headers: {
-            'User-Agent': USER_AGENT,
-            'Content-Type': 'application/json;charset=utf-8',
-        },
-        body: JSON.stringify(payload)
-    };
+    const postOptions = Api.postFetchOptions(payload);
     const response = await Api.limiter(async () => {return await fetch(WEBSITE_ENDPOINT + 'oauth/token', postOptions);});
     
     if (!response.ok)
@@ -78,30 +95,13 @@ async function performTokenRequest(auth_code) {
     }
 }
 
-async function getApiToken() {
-    let apiToken = sessionStorage.getItem('api_token');
-
-    if (apiToken) {
-        return apiToken;
-    }
-
-    return await requestApiToken();
-}
-
 async function requestApiToken() {
     const accessToken = getAccessToken();
 
     if (!accessToken) {
         return null;
     }
-
-    const getOptions = {
-        method: 'GET',
-        headers: {
-            'User-Agent': USER_AGENT,
-            'Authorization': `Bearer ${accessToken}`
-        }
-    };
+    const getOptions = Api.getAuthFetchOptions(`Bearer ${accessToken}`);
     const response = await Api.limiter(async () => {return await fetch(WEBSITE_ENDPOINT + 'users/api_token', getOptions);});
 
     if (!response.ok)
@@ -112,7 +112,7 @@ async function requestApiToken() {
     {
         const body = await response.json();
         apiToken = body.api_token;
-        sessionStorage.setItem('api_token', apiToken);
+        setApiToken(apiToken);
         return apiToken;
     }
 }
