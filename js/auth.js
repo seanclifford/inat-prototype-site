@@ -77,7 +77,7 @@ async function performTokenRequest(auth_code) {
         client_id: oauthApplicationId,
         code: auth_code,
         grant_type: "authorization_code",
-        //redirect_uri: redirect_uri,
+        redirect_uri: redirect_uri,
         code_verifier: verifier
     }
     const postOptions = Api.postFetchOptions(payload);
