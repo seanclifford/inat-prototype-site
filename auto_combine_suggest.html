@@ -1,0 +1,86 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+  
+    <title>iNat prototypes - Auto Combine Observations PROTOTYPE</title>
+    <meta name="description" content="Auto Combine Observations prototype for iNaturalist">
+    <meta name="author" content="Sean Clifford">
+    <link rel="shortcut icon" href="favicon.ico" type="image/icon">
+    <link rel="stylesheet" href="css/styles.css?v=1.0">
+    <style>
+        input[type=text] { width: 400px}
+        #message { min-height: 200px; width: 400px}
+
+        .affiliation {
+          float: right;
+        }
+        .affiliation img {
+          vertical-align: middle;
+        }
+    </style>
+  </head>
+  
+  <body>
+    
+    <span class="affiliation"><img id="site_img" width="30" height="30">&nbsp;<span id="site_title"></span> (<a href="site_selection.html">change</a>) </span>
+    
+    <h1>Auto Combine Observations prototype for iNaturalist</h1> 
+    
+    This tool creates a suggestion link for an owner of some observations to automatically combine them into a single observation.<br>
+    This can be useful when finding new users that have not got the hang of the web uploader yet and end up creating multiple observations accidentally.
+
+    <h2>Start here:</h2>
+    <ol>
+      <li>
+        Enter the observation IDs to merge in a comma separated list. The first one will be the one that's kept.<br>
+        <input type="text" id="observation_ids">
+      </li>
+      <li>
+        <input type="button" value='Check observations' onclick='checkObservations()'>
+        <div id='observations_found'></div>
+      </li>
+      <li><input type="button" value='Generate link' onclick='generateLink()'><br/>
+        <input type="text" id="link">
+      </li>
+      <li>
+        Copy the link and add it to a comment
+      </li>
+    </ol>
+
+    <br>
+    <br>
+    <h2>Still to work on for this prototype:</h2>
+    <ul>
+      <li>Make it work - it does nothing right now!</li>
+      <li>Make it easier to use</li>
+    </ul>
+  
+    <script src="js/constants.js?v=1.0.0"></script>
+    <script src="js/api.js?v=1.0.0"></script>
+    <script src="js/site.js?v=1.0.0"></script>
+    <script>
+        (async () => {
+            let currentSite = await getCurrentSite();
+            
+            let siteImg = document.getElementById("site_img");
+            let siteTitle = document.getElementById("site_title");
+
+            siteImg.src = currentSite.icon_url;
+            siteTitle.innerText = currentSite.site_name_short;
+        })();
+
+      async function checkObservations() {
+        let observationIdsCsv = document.getElementById("observation_ids").value;
+        let convertedCsv = observationIdsCsv.replace(/\s/g,'');
+        let observations = await Api.getObservations(convertedCsv);
+        //TODO: complete
+      }
+
+      function generateLink() {
+        //TODO: implement
+      }     
+    </script>
+  </body>
+</html>
