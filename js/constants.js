@@ -1,1 +1,1 @@
-const USER_AGENT = 'iNaturalist Prototype Tools';
+const USER_AGENT = 'Prototype Tools for iNaturalist';

@@ -129,14 +129,14 @@ var Api = {
     getFetchOptions: {
         method: 'GET',
         headers: {
-            'User-Agent': USER_AGENT
+            'X-Via': USER_AGENT
         }
     },
     getAuthFetchOptions: function(authToken) {
         return {
             method: 'GET',
             headers: {
-                'User-Agent': USER_AGENT,
+                'X-Via': USER_AGENT,
                 'Authorization': authToken
             }
         };
@@ -145,7 +145,7 @@ var Api = {
         return {
             method: 'POST',
             headers: {
-                'User-Agent': USER_AGENT,
+                'X-Via': USER_AGENT,
                 'Content-Type': 'application/json;charset=utf-8',
             },
             body: JSON.stringify(bodyObj)
@@ -155,7 +155,7 @@ var Api = {
         return {
             method: 'POST',
             headers: {
-                'User-Agent': USER_AGENT,
+                'X-Via': USER_AGENT,
                 'Content-Type': 'application/json;charset=utf-8',
                 'Authorization': authToken
             },
