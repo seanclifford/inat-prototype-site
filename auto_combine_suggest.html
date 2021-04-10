@@ -12,19 +12,12 @@
     <style>
         input[type=text] { width: 400px}
         #message { min-height: 200px; width: 400px}
-
-        .affiliation {
-          float: right;
-        }
-        .affiliation img {
-          vertical-align: middle;
-        }
     </style>
   </head>
   
   <body>
     
-    <span class="affiliation"><img id="site_img" width="30" height="30">&nbsp;<span id="site_title"></span> (<a href="site_selection.html">change</a>) </span>
+    <site-header id="site_header"></site-header>
     
     <h1>Auto Combine Observations prototype for iNaturalist</h1> 
     
@@ -60,15 +53,13 @@
     <script src="js/constants.js?v=1.0.0"></script>
     <script src="js/api.js?v=1.0.0"></script>
     <script src="js/site.js?v=1.0.0"></script>
+    <script src="js/components/site_header.js?v=1.0.0"></script>
     <script>
         (async () => {
-            let currentSite = await getCurrentSite();
+          const currentSite = await getCurrentSite();
             
-            let siteImg = document.getElementById("site_img");
-            let siteTitle = document.getElementById("site_title");
-
-            siteImg.src = currentSite.icon_url;
-            siteTitle.innerText = currentSite.site_name_short;
+            const siteHeader = document.getElementById("site_header");
+            siteHeader.setSite(currentSite);
         })();
 
       async function checkObservations() {
