@@ -93,7 +93,6 @@ var Api = {
         let bodyObj = {
             "message": {
                 "to_user_id": toUser.id,
-                "thread_id": 0,
                 "subject": subject,
                 "body": message
             }
