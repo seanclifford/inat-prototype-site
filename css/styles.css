@@ -36,8 +36,9 @@ li {
 
 .user_container {
     align-items: center;
-    display: flex;
-    padding:0.1rem;
+    display: inline-flex;
+    padding: 0.3rem;
+    padding-right: 1.5rem;
 }
 
 .user_info {
@@ -49,10 +50,10 @@ li {
     font-size: small;
 }
 
-.user_name:before:not(:empty) {
+.user_name:not(:empty):before {
     content: '(';
 }
 
-.user_name:after:not(:empty) {
+.user_name:not(:empty):after {
     content: ')';
 }
