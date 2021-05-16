@@ -33,3 +33,26 @@ li {
     width: 30px;
     border-radius: 50%;
 }
+
+.user_container {
+    align-items: center;
+    display: flex;
+    padding:0.1rem;
+}
+
+.user_info {
+    padding-left: 0.5rem;
+}
+
+.user_name {
+    font-style: italic;
+    font-size: small;
+}
+
+.user_name:before:not(:empty) {
+    content: '(';
+}
+
+.user_name:after:not(:empty) {
+    content: ')';
+}

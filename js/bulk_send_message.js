@@ -72,14 +72,7 @@ async function getUsersByNamesArray(userNames) {
 
 function addUser(user) {
     users.push(user);
-    var userHandle = user.login;
-    if(user.name) {
-        userHandle += ` (${user.name})`;
-    }
-    addUserResult({
-        icon: user.icon,
-        name: userHandle
-    });
+    addUserResult(user);
 }
 
 async function sendMessagesToUsers(subject, message, authToken, callback){ 

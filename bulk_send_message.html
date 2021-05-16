@@ -167,8 +167,14 @@
 
       function addUserResult(userResult) {
         let div = document.getElementById('users_found');
-        div.innerHTML += `<img src='${userResult.icon ?? 'img/person.svg'}'> `
-        div.innerHTML += `${userResult.name}<br/>`;
+        div.innerHTML += 
+            "<div class='user_container'>"
+          +   `<img src='${userResult.icon ?? 'img/person.svg'}'>`
+          +   "<div class='user_info'>"
+          +     `<div class='user_login'>${userResult.login}</div>`
+          +     `<div class='user_name'>${userResult.name ?? ''}</div>`
+          +   "</div>"
+          + "</div>";
       }
       
     </script>
