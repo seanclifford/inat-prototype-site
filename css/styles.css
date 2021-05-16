@@ -28,3 +28,8 @@ body {
 li {
     margin-top: 5px;
 }
+
+.user img {
+    width: 30px;
+    border-radius: 50%;
+}

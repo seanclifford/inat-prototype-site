@@ -25,7 +25,7 @@
     <ol>
       <li>
         <input type="button" value='Check authentication' onclick='authenticate()'>
-        <div id="authenticated_user"></div>
+        <div id="authenticated_user" class="user"></div>
       </li>
       <li>
         Choose data source to load users from:
@@ -46,7 +46,7 @@
       </li>
       <li>
         <input type="button" value='Load Users' onclick='loadUsers()'>
-        <div id='users_found'></div>
+        <div id='users_found' class="user"></div>
       </li>
       <li>Enter subject <br/>
         <input type="text" id="subject">
@@ -94,9 +94,8 @@
         if (user) {
           div.innerHTML = "Logged in as: ";
           
-          if (user.icon) {
-            div.innerHTML += `<img width='30' src='${user.icon}'> `;
-          }
+          div.innerHTML += `<img src='${user.icon ?? 'img/person.svg'}'> `;
+          
 
           name = user.login;
           if (user.name) {
@@ -168,9 +167,7 @@
 
       function addUserResult(userResult) {
         let div = document.getElementById('users_found');
-        if (userResult.icon) {
-          div.innerHTML += `<img width='30' src='${userResult.icon}'> `
-        }
+        div.innerHTML += `<img src='${userResult.icon ?? 'img/person.svg'}'> `
         div.innerHTML += `${userResult.name}<br/>`;
       }
       
