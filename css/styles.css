@@ -28,32 +28,3 @@ body {
 li {
     margin-top: 5px;
 }
-
-.user img {
-    width: 30px;
-    border-radius: 50%;
-}
-
-.user_container {
-    align-items: center;
-    display: inline-flex;
-    padding: 0.3rem;
-    padding-right: 1.5rem;
-}
-
-.user_info {
-    padding-left: 0.5rem;
-}
-
-.user_name {
-    font-style: italic;
-    font-size: small;
-}
-
-.user_name:not(:empty):before {
-    content: '(';
-}
-
-.user_name:not(:empty):after {
-    content: ')';
-}

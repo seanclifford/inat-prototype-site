@@ -77,6 +77,7 @@
     <script src="js/auth.js?v=1.0.0"></script>
     <script src="js/site.js?v=1.0.0"></script>
     <script src="js/components/site_header.js?v=1.0.0"></script>
+    <script src="js/components/user_info.js?v=1.0.0"></script>
     <script>
         (async () => {
             const currentSite = await getCurrentSite();
@@ -93,18 +94,7 @@
 
         if (user) {
           div.innerHTML = "Logged in as: ";
-          
-          div.innerHTML += `<img src='${user.icon ?? 'img/person.svg'}'> `;
-          
-
-          name = user.login;
-          if (user.name) {
-            name += ` - <i>${user.name}</i>`
-          }
-          div.innerHTML += name;
-        }
-        else {
-          div.innerHTML = ''
+          div.innerHTML += `<user-info img='${user.icon ?? ''}' login='${user.login}' name='${user.name}'>`;
         }
       }
 
@@ -167,14 +157,7 @@
 
       function addUserResult(userResult) {
         let div = document.getElementById('users_found');
-        div.innerHTML += 
-            "<div class='user_container'>"
-          +   `<img src='${userResult.icon ?? 'img/person.svg'}'>`
-          +   "<div class='user_info'>"
-          +     `<div class='user_login'>${userResult.login}</div>`
-          +     `<div class='user_name'>${userResult.name ?? ''}</div>`
-          +   "</div>"
-          + "</div>";
+        div.innerHTML += `<user-info img='${userResult.icon ?? ''}' login='${userResult.login}' name='${userResult.name}'>`;
       }
       
     </script>
