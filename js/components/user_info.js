@@ -12,7 +12,7 @@ class UserInfo extends HTMLElement {
 
         const defaultImgSrc = 'img/person.svg';
         let imgSource = this.hasAttribute('img') ? this.getAttribute('img') : defaultImgSrc;
-        if(!imgSource) {
+        if(!imgSource || imgSource === 'null') {
             imgSource = defaultImgSrc;
         }
         const userImg = document.createElement('img');
@@ -26,7 +26,10 @@ class UserInfo extends HTMLElement {
         userLoginDiv.setAttribute('class', 'user_login');
         userLoginDiv.innerText = userLogin;
 
-        const userName = this.hasAttribute('name') ? this.getAttribute('name') : '';
+        let userName = this.hasAttribute('name') ? this.getAttribute('name') : '';
+        if(!userName || userName === 'null') {
+            userName = '';
+        }
         const userNameDiv = document.createElement('div');
         userNameDiv.setAttribute('class', 'user_name');
         userNameDiv.innerText = userName;
