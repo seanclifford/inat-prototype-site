@@ -31,16 +31,16 @@
         Choose data source to load users from:
         <ul>
           <li>Enter comma separated list of user ids. e.g. johnsmith736,khaleesi89<br/>
-            <input type="text" id="user_ids">
+            <input type="search" id="user_ids">
           </li>
           <li>OR load from observations export file (JSON format) to message the observers of the observations.<br/>
             <input type="file" id="fileUpload" />
           </li>
           <li>OR Enter comma separated list of observation ids to message the observers of the observations.<br/>
-            <input type="text" id="observation_ids">
+            <input type="search" id="observation_ids">
           </li>
           <li>OR Enter project id to load its members. This is in the url on the project page. e.g. stinkbugs-of-the-world<br/>
-            <input type="text" id="project_id">
+            <input type="search" id="project_id">
           </li>
         </ul>
       </li>
@@ -142,7 +142,7 @@
 
       function onMessageSend(user, currentNum, totalCount) {
         let div = document.getElementById('send_result');
-        div.innerHTML = `<p>Sent message ${currentNum} of ${totalCount} to user ${user.login}...</p>`;
+        div.innerHTML = `<p>Sent message ${currentNum} of ${totalCount} to user ${user.login}...</p><progress value="${currentNum}" max="${totalCount}"/>`;
       }
 
       function setError(error) {
