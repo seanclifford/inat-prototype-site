@@ -28,21 +28,29 @@
         <div id="authenticated_user" class="user"></div>
       </li>
       <li>
-        Choose data source to load users from:
-        <ul>
-          <li>Enter comma separated list of user ids. e.g. johnsmith736,khaleesi89<br/>
-            <input type="search" id="user_ids">
-          </li>
-          <li>OR load from observations export file (JSON format) to message the observers of the observations.<br/>
-            <input type="file" id="fileUpload" />
-          </li>
-          <li>OR Enter comma separated list of observation ids to message the observers of the observations.<br/>
-            <input type="search" id="observation_ids">
-          </li>
-          <li>OR Enter project id to load its members. This is in the url on the project page. e.g. stinkbugs-of-the-world<br/>
-            <input type="search" id="project_id">
-          </li>
-        </ul>
+          <legend>Choose data source to load users from:</legend>
+          <input type="radio" name="user_load" value="user_ids" onchange="userLoadChanged()" checked>User IDs<br>
+          <input type="radio" name="user_load" value="fileUpload" onchange="userLoadChanged()">Export file (JSON)<br>
+          <input type="radio" name="user_load" value="observation_ids" onchange="userLoadChanged()">Observation IDs<br>
+          <input type="radio" name="user_load" value="project_id" onchange="userLoadChanged()">Project ID<br>
+      </li>
+      <li>
+        <div id="user_ids_container">
+          Enter comma separated list of user ids. e.g. johnsmith736,khaleesi89<br/>
+          <input type="search" id="user_ids">
+        </div>
+        <div id="fileUpload_container">
+          Load from observations export file (JSON format) to message the observers of the observations.<br/>
+          <input type="file" id="fileUpload" />
+        </div>
+        <div id="observation_ids_container">
+          Enter comma separated list of observation ids to message the observers of the observations.<br/>
+          <input type="search" id="observation_ids">
+        </div>
+        <div id="project_id_container">
+          Enter project id to load its members. This is in the url on the project page. e.g. stinkbugs-of-the-world<br/>
+          <input type="search" id="project_id">
+        </div>
       </li>
       <li>
         <input type="button" value='Load Users' onclick='loadUsers()'>
@@ -65,9 +73,9 @@
     <h2>Still to work on for this prototype:</h2>
     <ul>
       <li>Allow remove individual users</li>
+      <li>Import users from csv export</li>
       <li>Replace tokens with dynamic values in messages. i.e. Hi @username! </li>
       <li>Tech: html encode all external values</li>
-      <li>Tech: try out web components</li>
       <li>Test this works in practice</li>
     </ul>
   
@@ -80,10 +88,11 @@
     <script src="js/components/user_info.js?v=1.0.0"></script>
     <script>
         (async () => {
-            const currentSite = await getCurrentSite();
-            
-            const siteHeader = document.getElementById("site_header");
-            siteHeader.setSite(currentSite);
+          userLoadChanged();
+          const currentSite = await getCurrentSite();
+          
+          const siteHeader = document.getElementById("site_header");
+          siteHeader.setSite(currentSite);
         })();
 
       async function authenticate() {
@@ -95,6 +104,19 @@
         if (user) {
           div.innerHTML = "Logged in as: ";
           div.innerHTML += `<user-info img='${user.icon ?? ''}' login='${user.login}' name='${user.name}'>`;
+        }
+      }
+
+      function userLoadChanged() {
+        const radioButtons = document.getElementsByName("user_load");
+        for (i = 0; i < radioButtons.length; i++) {
+          let radioButton = radioButtons[i];
+          let inputContainerDisplay = 'none';
+          if (radioButton.checked) {
+            inputContainerDisplay = 'block';
+          }
+          const inputContainer = document.getElementById(`${radioButton.value}_container`);
+          inputContainer.style.display = inputContainerDisplay;
         }
       }
 
