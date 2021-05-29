@@ -1,12 +1,59 @@
 let users = new Map();
 
 function getUsersFromFile(fileUpload) {
+
+    const fileName = fileUpload.name;
+    const type = fileName.split('.').pop();
+
     var reader = new FileReader();
-    reader.onload = function (e) {
-        observations = JSON.parse(e.target.result);
-        getUsersByObservations(observations.results); 
+    reader.onload = async function (e) {
+        if (type.toUpperCase() == "CSV") {
+            await getUsersFromExportCSV(e.target.result);
+        } else {
+            observations = JSON.parse(e.target.result);
+            getUsersByObservations(observations.results); 
+        }
     }
     reader.readAsText(fileUpload);
+}
+
+async function getUsersFromExportCSV(csvFileContents) {
+    const objects = csvToObjectArray(csvFileContents);
+    const userIds = objects.map(obj => obj.user_id);
+    await getUsersByNamesArray(userIds);
+}
+
+function csvToObjectArray(data) {
+    //CODE pulled from: https://stackoverflow.com/a/64396703/1817
+    // Split data into lines and separate headers from actual data
+    // using Array spread operator
+    const [headerLine, ...lines] = data.split('\n');
+
+    // Use common line separator, which parses each line as the contents of a JSON array
+    const parseLine = (line) => JSON.parse(`[${line}]`);
+
+    // Split headers line into an array
+    const headers = parseLine(headerLine);
+
+    // Create objects from parsing lines
+    // There will be as much objects as lines
+    const objects = lines
+    .map( (line, index) =>
+
+        // Split line with JSON
+        parseLine(line)
+
+        // Reduce values array into an object like: { [header]: value } 
+        .reduce( 
+            (object, value, index) => ({
+            ...object,
+            [ headers[index] ]: value,
+            }),
+            {}
+        ) 
+    );
+
+    return objects;
 }
 
 async function getUsersByObservationsCsv(observationIdsCsv) {
