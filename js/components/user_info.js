@@ -34,13 +34,20 @@ class UserInfo extends HTMLElement {
         userNameDiv.setAttribute('class', 'user_name');
         userNameDiv.innerText = userName;
 
+        const removeDiv = document.createElement('div');
+        const removeButton = document.createElement('button');
+        removeButton.setAttribute('class', 'user_remove');
+        removeButton.setAttribute('title', `Remove ${userLogin}`)
+        const removeImg = document.createElement('img');
+        removeImg.setAttribute('src', 'img/delete.svg');
+
         const style = document.createElement('style');
         style.textContent = `
         .user_container {
-            align-items: center;
+            align-items: end;
             display: inline-flex;
             padding: 0.3rem;
-            padding-right: 1.5rem;
+            padding-right: 1.2rem;
         }
         
         .user_container img {
@@ -64,6 +71,16 @@ class UserInfo extends HTMLElement {
         .user_name:not(:empty):after {
             content: ')';
         }
+
+        .user_remove {
+            padding: 0;
+            padding-left:0.2rem;
+            border-width: 0;
+        }
+        .user_remove img {
+            width: 15px;
+        }
+        
         `;
 
         // Attach the created elements to the shadow dom
@@ -75,12 +92,23 @@ class UserInfo extends HTMLElement {
         //     <div class='user_login'>userLogin</div>
         //     <div class='user_name'>userName</div>
         //   </div>
+        //   <div>
+        //     <button class='user_remove'>
+        //   </div>
         //</div>
         shadow.appendChild(container);
         container.appendChild(userImg);
         container.appendChild(userTextDiv);
         userTextDiv.appendChild(userLoginDiv);
         userTextDiv.appendChild(userNameDiv);
+        container.appendChild(removeDiv);
+        removeDiv.appendChild(removeButton);
+        removeButton.appendChild(removeImg);
+    }
+
+    onRemove() {
+        const removeEvent = new CustomEvent('on-remove');
+        this.dispatchEvent(removeEvent);
     }
 }
 
