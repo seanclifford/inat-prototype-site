@@ -121,24 +121,31 @@
       }
 
       async function loadUsers() {
-        let userNamesCsv = document.getElementById("user_ids").value;
-        let observationIdsCsv = document.getElementById("observation_ids").value;
-        let projectId = document.getElementById("project_id").value;
-        let fileUpload = document.getElementById("fileUpload").files[0];
-        if (fileUpload) {
-          getUsersFromFile(fileUpload);
-        }
-        else if (userNamesCsv) {
-          await getUsersByNamesCsv(userNamesCsv);
-        }
-        else if (observationIdsCsv) {
-          await getUsersByObservationsCsv(observationIdsCsv);
-        }
-        else if (projectId) {
-          await getUsersByProjectMembers(projectId);
-        }
-        else {
-          alert('Enter some user names or observation ids, observations file or project id')
+        const userLoadType = document.querySelector('input[name="user_load"]:checked').value;
+        switch(userLoadType)
+        {
+          case 'fileUpload':
+            let fileUpload = document.getElementById("fileUpload").files[0];
+            getUsersFromFile(fileUpload);
+            break;
+
+          case 'user_ids':
+            let userNamesCsv = document.getElementById("user_ids").value;
+            await getUsersByNamesCsv(userNamesCsv);
+            break;
+
+          case 'observation_ids':
+            let observationIdsCsv = document.getElementById("observation_ids").value;
+            await getUsersByObservationsCsv(observationIdsCsv);
+            break;
+
+          case 'project_id':
+            let projectId = document.getElementById("project_id").value;
+            await getUsersByProjectMembers(projectId);
+            break;
+            
+          default:
+            alert('Enter some user names or observation ids, observations file or project id')
         }
 
         if(users) {
