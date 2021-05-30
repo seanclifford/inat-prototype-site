@@ -46,7 +46,7 @@ var Api = {
         }
     },
     getProjectMembers: async function(projectId, page) {
-        let response = await Api.limiter(async () => { return await fetch(`${API_ENDPOINT}projects/${projectId}/members?page=${page}&per_page=100`, Api.getFetchOptions);});
+        let response = await Api.limiter(async () => { return await fetch(`${API_ENDPOINT}projects/${projectId}/members?page=${page}&per_page=100&order_by=login`, Api.getFetchOptions);});
         if (!response.ok) {
             return {
                 status: 'ERROR',
