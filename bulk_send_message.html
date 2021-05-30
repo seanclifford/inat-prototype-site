@@ -29,10 +29,10 @@
       </li>
       <li>
           <legend>Choose data source to load users from:</legend>
-          <input type="radio" name="user_load" value="user_ids" onchange="userLoadChanged()" checked>User IDs<br>
-          <input type="radio" name="user_load" value="fileUpload" onchange="userLoadChanged()">Export file (JSON)<br>
-          <input type="radio" name="user_load" value="observation_ids" onchange="userLoadChanged()">Observation IDs<br>
-          <input type="radio" name="user_load" value="project_id" onchange="userLoadChanged()">Project ID<br>
+          <label><input type="radio" name="user_load" value="user_ids" onchange="userLoadChanged()" checked>User IDs</label><br>
+          <label><input type="radio" name="user_load" value="fileUpload" onchange="userLoadChanged()">Export file (JSON)</label><br>
+          <label><input type="radio" name="user_load" value="observation_ids" onchange="userLoadChanged()">Observation IDs</label><br>
+          <label><input type="radio" name="user_load" value="project_id" onchange="userLoadChanged()">Project ID</label><br>
       </li>
       <li>
         <div id="user_ids_container">
@@ -143,7 +143,7 @@
             let projectId = document.getElementById("project_id").value;
             await getUsersByProjectMembers(projectId);
             break;
-            
+
           default:
             alert('Enter some user names or observation ids, observations file or project id')
         }
