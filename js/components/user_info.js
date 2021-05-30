@@ -1,5 +1,4 @@
 class UserInfo extends HTMLElement {
-    
     constructor() {
         super();
         
@@ -38,6 +37,7 @@ class UserInfo extends HTMLElement {
         const removeButton = document.createElement('button');
         removeButton.setAttribute('class', 'user_remove');
         removeButton.setAttribute('title', `Remove ${userLogin}`)
+        removeButton.onclick = () => {this.onRemove()};
         const removeImg = document.createElement('img');
         removeImg.setAttribute('src', 'img/delete.svg');
 
@@ -107,8 +107,8 @@ class UserInfo extends HTMLElement {
     }
 
     onRemove() {
-        const removeEvent = new CustomEvent('on-remove');
-        this.dispatchEvent(removeEvent);
+        const onRemoveScript = this.getAttribute('onremove');
+        eval(onRemoveScript);
     }
 }
 

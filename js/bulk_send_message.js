@@ -1,4 +1,4 @@
-let users = [];
+let users = new Map();
 
 function getUsersFromFile(fileUpload) {
     var reader = new FileReader();
@@ -17,7 +17,7 @@ async function getUsersByObservationsCsv(observationIdsCsv) {
 
 function getUsersByObservations(observations) {
     resetUserResults();
-    users = [];
+    users.clear();
 
     if (observations.status === 'ERROR'){
         setError(observations.message);
@@ -40,7 +40,7 @@ function getUsersByObservations(observations) {
 
 async function getUsersByProjectMembers(projectId) {
     resetUserResults();
-    users = [];
+    users.clear();
 
     let projectMembers = await Api.getProjectMembers(projectId);
     const projectUsers = projectMembers.map(member => member.user);
@@ -57,7 +57,7 @@ async function getUsersByNamesCsv(userNamesCsv) {
 
 async function getUsersByNamesArray(userNames) {
     resetUserResults();
-    users = [];
+    users.clear();
     
     for(let i = 0; i < userNames.length; i++) {
         let user = await Api.getUser(userNames[i])
@@ -71,16 +71,20 @@ async function getUsersByNamesArray(userNames) {
 }
 
 function addUser(user) {
-    users.push(user);
+    users.set(user.login, user);
     addUserResult(user);
+}
+
+function removeUser(userLogin) {
+    users.delete(userLogin);
 }
 
 async function sendMessagesToUsers(subject, message, authToken, callback){ 
     let currMessage = 0;
-    let results = await Promise.all(users.map(async (user) => {
+    let results = await Promise.all([...users.values()].map(async (user) => {
         const userMessage = setMessageVariablesForUser(message, user);
         let result = await Api.sendMessage(user, subject, userMessage, authToken);
-        callback(user, ++currMessage, users.length);
+        callback(user, ++currMessage, users.size);
         return result;
     }));
 
