@@ -41,13 +41,19 @@ function getUsersByObservations(observations) {
 async function getUsersByProjectMembers(projectId) {
     resetUserResults();
     users.clear();
-
-    let projectMembers = await Api.getProjectMembers(projectId);
-    const projectUsers = projectMembers.map(member => member.user);
-
-    projectUsers.forEach(user => {
-        addUser(user);
-    });
+    let page = 1;
+    let totalPages = 1;
+    do {
+        const response = await Api.getProjectMembers(projectId, page);
+        totalPages = response.total_results / response.per_page + 1;
+        const projectMembers = response.results;
+        const projectUsers = projectMembers.map(member => member.user);
+        projectUsers.forEach(user => {
+            addUser(user);
+        });
+        //console.log(`page=${page} count=${projectMembers.length} users=${users.size}`);
+        page++;
+    } while (page <= totalPages);
 }
 
 async function getUsersByNamesCsv(userNamesCsv) {

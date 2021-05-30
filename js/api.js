@@ -45,8 +45,8 @@ var Api = {
             return body.results[0];
         }
     },
-    getProjectMembers: async function(projectId) {
-        let response = await Api.limiter(async () => { return await fetch(API_ENDPOINT + 'projects/' + projectId + '/members', Api.getFetchOptions);});
+    getProjectMembers: async function(projectId, page) {
+        let response = await Api.limiter(async () => { return await fetch(`${API_ENDPOINT}projects/${projectId}/members?page=${page}&per_page=100`, Api.getFetchOptions);});
         if (!response.ok) {
             return {
                 status: 'ERROR',
@@ -55,7 +55,7 @@ var Api = {
         }
         else {
             let body = await response.json();
-            return body.results;
+            return body;
         }
     },
     getObservations: async function(observationIds) {
@@ -87,9 +87,8 @@ var Api = {
     sendMessage: async function(toUser, subject, message, authToken) {
         //replace logic with comment to test without sending messages.
         //await Api.limiter(async () => {await delay(500);});
-        //return { 
-        //            status: 'OK',
-        //       };
+        //return { status: 'OK' };
+        
         let bodyObj = {
             "message": {
                 "to_user_id": toUser.id,
