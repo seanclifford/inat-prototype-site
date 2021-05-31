@@ -106,8 +106,7 @@ async function sendMessagesToUsers(subject, message, authToken, callback){
 }
 
 function setMessageVariablesForUser(message, user) {
-    let result = message.replace('[user]', user.login);
-    result = result.replace('[observation_count]', user.observation_count);
+    let result = message.replace('[login]', user.login);
 
     return result;
 }
