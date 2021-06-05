@@ -45,6 +45,10 @@ async function getUsersByProjectMembers(projectId) {
     let totalPages = 1;
     do {
         const response = await Api.getProjectMembers(projectId, page);
+        if (response.status == "ERROR") {
+            setError(response.message);
+            break;
+        }
         totalPages = response.total_results / response.per_page + 1;
         const projectMembers = response.results;
         const projectUsers = projectMembers.map(member => member.user);

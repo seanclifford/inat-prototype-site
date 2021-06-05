@@ -33,6 +33,7 @@ var Api = {
         }
     },
     getUser: async function(userId) {
+        
         let response = await Api.limiter(async () => { return await fetch(API_ENDPOINT + 'users/' + userId, Api.getFetchOptions);});
         if (!response.ok) {
             return {
@@ -59,6 +60,12 @@ var Api = {
         }
     },
     getObservations: async function(observationIds) {
+        if (!observationIds) {
+            return {
+                status: 'ERROR',
+                message: 'No observation ids entered.'
+            }
+        }
         let response = await Api.limiter(async () => { return await fetch(API_ENDPOINT + 'observations/' + observationIds, Api.getFetchOptions);});
         if (!response.ok) {
             return {

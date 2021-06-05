@@ -13,6 +13,7 @@
         input[type=text],
         input[type=search] { width: 400px}
         #message { min-height: 200px; width: 400px}
+        .errorMessage {color: red;}
     </style>
   </head>
   
@@ -55,6 +56,7 @@
       </li>
       <li>
         <input type="button" value='Load Users' onclick='loadUsers()'>
+        <span id='user_load_errors'class='errorMessage'></span>
         <div id='users_found' class="user"></div>
       </li>
       <li>Enter subject <br/>
@@ -75,7 +77,6 @@
     <ul>
       <li>Allow progressive adding to user list. Plus clear all button.</li>
       <li>Import users from csv export</li>
-      <li>Replace tokens with dynamic values in messages. i.e. Hi @username! </li>
       <li>Tech: html encode all external values</li>
       <li>Test this works in practice</li>
     </ul>
@@ -127,6 +128,10 @@
         {
           case 'fileUpload':
             let fileUpload = document.getElementById("fileUpload").files[0];
+            if (!fileUpload){
+              setError('No file selected.');
+              return;
+            }
             getUsersFromFile(fileUpload);
             break;
 
@@ -170,13 +175,13 @@
       }
 
       function setError(error) {
-        let div = document.getElementById('users_found');
-        div.innerHTML += `<p>${error.message}</p>`;
+        let div = document.getElementById('user_load_errors');
+        div.innerHTML += error + '&nbsp;';
       }
       
       function resetUserResults() {
-        let div = document.getElementById('users_found');
-        div.innerHTML = "";
+        document.getElementById('users_found').innerHTML = "";
+        document.getElementById('user_load_errors').innerHTML = "";
       }
 
       function addUserResult(userResult) {
