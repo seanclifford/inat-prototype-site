@@ -56,8 +56,7 @@ async function getUsersByObservationsCsv(observationIdsCsv) {
 }
 
 function getUsersByObservations(observations) {
-    resetUserResults();
-    users.clear();
+    clearUsers();
 
     if (observations.status === 'ERROR'){
         setError(observations.message);
@@ -79,8 +78,8 @@ function getUsersByObservations(observations) {
 }
 
 async function getUsersByProjectMembers(projectId) {
-    resetUserResults();
-    users.clear();
+    clearUsers();
+
     let page = 1;
     let totalPages = 1;
     do {
@@ -106,8 +105,7 @@ async function getUsersByNamesCsv(userNamesCsv) {
 }
 
 async function getUsersByNamesArray(userNames) {
-    resetUserResults();
-    users.clear();
+    clearUsers();
     
     userNames.sort();
     for(let i = 0; i < userNames.length; i++) {
@@ -122,12 +120,19 @@ async function getUsersByNamesArray(userNames) {
 }
 
 function addUser(user) {
-    users.set(user.login, user);
-    addUserResult(user);
+    if (!users.has(user.login)) {
+        users.set(user.login, user);
+        addUserResult(user);
+    }
 }
 
 function removeUser(userLogin) {
     users.delete(userLogin);
+}
+
+function clearUsers() {
+    resetUserResults();
+    users.clear();
 }
 
 async function sendMessagesToUsers(subject, message, authToken, callback){ 
