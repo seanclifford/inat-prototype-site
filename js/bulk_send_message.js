@@ -88,7 +88,7 @@ async function getUsersByProjectMembers(projectId) {
             setError(response.message);
             break;
         }
-        totalPages = response.total_results / response.per_page + 1;
+        totalPages = Math.ceil(response.total_results / response.per_page);
         const projectMembers = response.results;
         const projectUsers = projectMembers.map(member => member.user);
         projectUsers.forEach(user => {
