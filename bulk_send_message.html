@@ -32,7 +32,7 @@
       <li>
           <legend>Choose data source to load users from:</legend>
           <label><input type="radio" name="user_load" value="user_ids" onchange="userLoadChanged()" checked>User IDs</label><br>
-          <label><input type="radio" name="user_load" value="fileUpload" onchange="userLoadChanged()">Export file (JSON)</label><br>
+          <label><input type="radio" name="user_load" value="fileUpload" onchange="userLoadChanged()">Export file (CSV or JSON)</label><br>
           <label><input type="radio" name="user_load" value="observation_ids" onchange="userLoadChanged()">Observation IDs</label><br>
           <label><input type="radio" name="user_load" value="project_id" onchange="userLoadChanged()">Project ID</label><br>
       </li>
@@ -42,8 +42,8 @@
           <input type="search" id="user_ids">
         </div>
         <div id="fileUpload_container">
-          Load from observations export file (JSON format) to message the observers of the observations.<br/>
-          <input type="file" id="fileUpload" />
+          Load from observations export file (CSV or JSON format) to message the observers of the observations.<br/>
+          <input type="file" id="fileUpload" accept=".csv,.json" />
         </div>
         <div id="observation_ids_container">
           Enter comma separated list of observation ids to message the observers of the observations.<br/>
@@ -76,7 +76,9 @@
     <h2>Still to work on for this prototype:</h2>
     <ul>
       <li>Allow progressive adding to user list. Plus clear all button.</li>
-      <li>Import users from csv export</li>
+      <li>Progress bar on Load Users when needed. Replace Load Users with Cancel during load.</li>
+      <li>Don't load yourself if authenticated</li>
+      <li>Don't show delete button on authenticate user-info control</li>
       <li>Tech: html encode all external values</li>
       <li>Test this works in practice</li>
     </ul>

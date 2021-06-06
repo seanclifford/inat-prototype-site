@@ -19,41 +19,34 @@ function getUsersFromFile(fileUpload) {
 
 async function getUsersFromExportCSV(csvFileContents) {
     const objects = csvToObjectArray(csvFileContents);
-    const userIds = objects.map(obj => obj.user_id);
+    const userIds = [...new Set(objects.map(obj => obj.user_login))];
     await getUsersByNamesArray(userIds);
 }
 
-function csvToObjectArray(data) {
-    //CODE pulled from: https://stackoverflow.com/a/64396703/1817
-    // Split data into lines and separate headers from actual data
-    // using Array spread operator
-    const [headerLine, ...lines] = data.split('\n');
-
-    // Use common line separator, which parses each line as the contents of a JSON array
-    const parseLine = (line) => JSON.parse(`[${line}]`);
-
-    // Split headers line into an array
-    const headers = parseLine(headerLine);
-
-    // Create objects from parsing lines
-    // There will be as much objects as lines
-    const objects = lines
-    .map( (line, index) =>
-
-        // Split line with JSON
-        parseLine(line)
-
-        // Reduce values array into an object like: { [header]: value } 
-        .reduce( 
-            (object, value, index) => ({
-            ...object,
-            [ headers[index] ]: value,
-            }),
-            {}
-        ) 
-    );
-
-    return objects;
+function csvToObjectArray(strData) {
+    //Copied and edited from: https://gist.github.com/plbowers/7560ae793613ee839151624182133159
+    const objPattern = new RegExp(("(\\,|\\r?\\n|\\r|^)(?:\"((?:\\\\.|\"\"|[^\\\\\"])*)\"|([^\\,\"\\r\\n]*))"),"gi");
+    let arrMatches = null, arrData = [[]];
+    while (arrMatches = objPattern.exec(strData)){
+        if (arrMatches[1].length && arrMatches[1] !== ",") arrData.push([]);
+        arrData[arrData.length - 1].push(arrMatches[2] ? 
+            arrMatches[2].replace(new RegExp( "[\\\\\"](.)", "g" ), '$1') :
+            arrMatches[3]);
+    }
+    const hData = arrData.shift();
+    const hashData = arrData
+        .filter(row => {return row.length > 1 || String(row[0])})
+        .map(row => {
+            let i = 0;
+            return hData.reduce(
+                (acc, key) => { 
+                    acc[key] = row[i++]; 
+                    return acc; 
+                },
+                {}
+            );
+        });
+    return hashData;
 }
 
 async function getUsersByObservationsCsv(observationIdsCsv) {
@@ -116,6 +109,7 @@ async function getUsersByNamesArray(userNames) {
     resetUserResults();
     users.clear();
     
+    userNames.sort();
     for(let i = 0; i < userNames.length; i++) {
         let user = await Api.getUser(userNames[i])
         if (user.status === 'ERROR') {
