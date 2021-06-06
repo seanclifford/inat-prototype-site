@@ -56,6 +56,11 @@
       </li>
       <li>
         <input type="button" value='Load Users' onclick='loadUsers()'>
+        <span id="user_loading" style="display: none;">
+          <progress id="user_loading_progress" value="50" max="100">50 of 100</progress>
+          <label id="user_loading_label" for="user_loading_progress">50 of 100</label>
+          <button onclick="cancelLoad()">Cancel</button>
+        </span>
         <span id='user_load_errors'class='errorMessage'></span>
         <div id='users_found' class="user"></div>
       </li>
@@ -173,7 +178,7 @@
 
       function onMessageSend(user, currentNum, totalCount) {
         let div = document.getElementById('send_result');
-        div.innerHTML = `<p>Sent message ${currentNum} of ${totalCount} to user ${user.login}...</p><progress value="${currentNum}" max="${totalCount}"/>`;
+        div.innerHTML = `<p>Sent message ${currentNum} of ${totalCount} to user ${user.login}...</p><progress value="${currentNum}" max="${totalCount}"></<progress>`;
       }
 
       function setError(error) {
