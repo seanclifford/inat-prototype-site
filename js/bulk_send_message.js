@@ -51,8 +51,13 @@ function csvToObjectArray(strData) {
 
 async function getUsersByObservationsCsv(observationIdsCsv) {
     let convertedCsv = observationIdsCsv.replace(/\s/g,'');
-    let observations = await Api.getObservations(convertedCsv);
-    getUsersByObservations(observations);
+    if (convertedCsv.split(',').length > 200) {
+        setError('Loading more than 200 observations at once is not supported.');
+    }
+    else {
+        let observations = await Api.getObservations(convertedCsv);
+        getUsersByObservations(observations);
+    }
 }
 
 function getUsersByObservations(observations) {
