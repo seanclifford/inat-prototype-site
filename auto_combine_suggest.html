@@ -50,6 +50,7 @@
     <script src="js/api.js?v=1.0.0"></script>
     <script src="js/site.js?v=1.0.0"></script>
     <script src="js/components/site_header.js?v=1.0.0"></script>
+    <script src="js/components/user_info.js?v=1.0.0"></script>
     <script>
         (async () => {
           const currentSite = await getCurrentSite();
@@ -59,9 +60,36 @@
         })();
 
       async function checkObservations() {
-        let observationIdsCsv = document.getElementById("observation_ids").value;
-        let convertedCsv = observationIdsCsv.replace(/\s/g,'');
-        let observations = await Api.getObservations(convertedCsv);
+        const observationIdsCsv = document.getElementById("observation_ids").value;
+        const convertedCsv = observationIdsCsv.replace(/\s/g,'');
+        const observations = await Api.getObservations(convertedCsv);
+        let observationsDiv = document.getElementById("observations_found");
+        const distinctUserLogins = [...new Set(observations.map(o => o.user.login))];
+        if (distinctUserLogins.length > 1) {
+          observationsDiv.innerText = `These observations are not owned by the same user. You have entered observations for: ${distinctUserLogins.toString()}`;
+        }
+        else {
+          let author = observations[0].user;
+          let authorUserInfo = document.createElement('user-info');
+          authorUserInfo.setAttribute('img', author.icon_url);
+          authorUserInfo.setAttribute('login', author.login);
+          authorUserInfo.setAttribute('name', author.name);
+          observationsDiv.appendChild(authorUserInfo);
+
+          observations.forEach(observation => {
+            let observationDiv = document.createElement('div');
+            
+            let observationHeaderDiv = document.createElement('div');
+            observationHeaderDiv.innerText = observation.id;
+            
+            let observationFirstPhoto = document.createElement('img');
+            observationFirstPhoto.setAttribute('src', observation.photos[0].url);
+
+            observationDiv.appendChild(observationFirstPhoto);
+
+            observationsDiv.appendChild(observationDiv);
+          });
+        }
         //TODO: complete
       }
 
