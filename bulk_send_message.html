@@ -185,7 +185,12 @@
 
       function addUserResult(userResult) {
         let div = document.getElementById('users_found');
-        div.innerHTML += `<user-info img='${userResult.icon}' login='${userResult.login}' name='${userResult.name}' onremove="removeUserFromResults(this)">`;
+        let userInfo = document.createElement('user-info');
+        userInfo.setAttribute('img', userResult.icon);
+        userInfo.setAttribute('login', userResult.login);
+        userInfo.setAttribute('name', userResult.name);
+        userInfo.setAttribute('onremove', 'removeUserFromResults(this)');
+        div.appendChild(userInfo);
       }
 
       function removeUserFromResults(userInfoElement) {

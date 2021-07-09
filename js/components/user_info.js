@@ -1,4 +1,9 @@
 class UserInfo extends HTMLElement {
+
+    static get observedAttributes() {
+        return ['img', 'name', 'login', 'onremove'];
+      }
+
     constructor() {
         super();
         
@@ -9,37 +14,16 @@ class UserInfo extends HTMLElement {
         const container = document.createElement('div');
         container.setAttribute('class', 'user_container');
 
-        const defaultImgSrc = 'img/person.svg';
-        let imgSource = this.hasAttribute('img') ? this.getAttribute('img') : defaultImgSrc;
-        if(!imgSource || imgSource === 'null') {
-            imgSource = defaultImgSrc;
-        }
         const userImg = document.createElement('img');
-        userImg.setAttribute('src', imgSource);
 
         const userTextDiv = document.createElement('div');
         userTextDiv.setAttribute('class', 'user_text');
 
-        const userLogin = this.hasAttribute('login') ? this.getAttribute('login') : '';
         const userLoginDiv = document.createElement('div');
         userLoginDiv.setAttribute('class', 'user_login');
-        userLoginDiv.innerText = userLogin;
 
-        let userName = this.hasAttribute('name') ? this.getAttribute('name') : '';
-        if(!userName || userName === 'null') {
-            userName = '';
-        }
         const userNameDiv = document.createElement('div');
         userNameDiv.setAttribute('class', 'user_name');
-        userNameDiv.innerText = userName;
-
-        const removeDiv = document.createElement('div');
-        const removeButton = document.createElement('button');
-        removeButton.setAttribute('class', 'user_remove');
-        removeButton.setAttribute('title', `Remove ${userLogin}`)
-        removeButton.onclick = () => {this.onRemove()};
-        const removeImg = document.createElement('img');
-        removeImg.setAttribute('src', 'img/delete.svg');
 
         const style = document.createElement('style');
         style.textContent = `
@@ -101,16 +85,85 @@ class UserInfo extends HTMLElement {
         container.appendChild(userTextDiv);
         userTextDiv.appendChild(userLoginDiv);
         userTextDiv.appendChild(userNameDiv);
-        container.appendChild(removeDiv);
-        removeDiv.appendChild(removeButton);
-        removeButton.appendChild(removeImg);
+    }
+
+    loginText() {
+        return this.hasAttribute('login') ? this.getAttribute('login') : '';
     }
 
     onRemove() {
         const onRemoveScript = this.getAttribute('onremove');
         eval(onRemoveScript);
     }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        switch(name) {
+            case 'name':
+                updateName(this, newValue);
+                break;
+            case 'login':
+                updateLogin(this);
+                break;
+            case 'img':
+                updateImage(this, newValue);
+                break;
+            case 'onremove':
+                updateOnRemove(this, newValue);
+                break;
+        }
+    }
 }
 
 // Define the element
 customElements.define('user-info', UserInfo);
+
+function updateImage(elem, img) {
+    const shadow = elem.shadowRoot;
+    const userImg = shadow.querySelector('.user_container img');
+
+    const defaultImgSrc = 'img/person.svg';
+    let imgSource = img ?? defaultImgSrc;
+    if (!imgSource || imgSource === 'null') {
+        imgSource = defaultImgSrc;
+    }
+    userImg.setAttribute('src', imgSource);
+}
+
+function updateName(elem, name) {
+    const shadow = elem.shadowRoot;
+    const userNameDiv = shadow.querySelector('.user_name');
+
+    let userName = name ?? '';
+    if (!userName || userName === 'null') {
+        userName = '';
+    }
+    userNameDiv.innerText = userName;
+}
+
+function updateLogin(elem) {
+    const shadow = elem.shadowRoot;
+    const userLoginDiv = shadow.querySelector('.user_login');
+    
+    userLoginDiv.innerText = elem.loginText();
+}
+
+function updateOnRemove(elem, onRemove) {
+    const shadow = elem.shadowRoot;
+    const container = shadow.querySelector('.user_container');
+    let removeButton = shadow.querySelector('.user_remove');
+
+    if (onRemove && !removeButton) {
+        removeButton = document.createElement('button');
+        removeButton.setAttribute('class', 'user_remove');
+        removeButton.setAttribute('title', `Remove ${elem.loginText()}`);
+        removeButton.onclick = () => {elem.onRemove()};
+        const removeImg = document.createElement('img');
+        removeImg.setAttribute('src', 'img/delete.svg');
+
+        container.appendChild(removeButton);
+        removeButton.appendChild(removeImg);
+    }
+    else if (!onRemove && removeButton) {
+        container.removeChild(removeButton);
+    }
+}
