@@ -59,7 +59,7 @@
         <span id="user_loading" style="display: none;">
           <progress id="user_loading_progress" value="50" max="100">50 of 100</progress>
           <label id="user_loading_label" for="user_loading_progress">50 of 100</label>
-          <button onclick="cancelLoad()">Cancel</button>
+          <button id="user_loading_cancel" onclick="cancelLoad()">Cancel</button>
         </span>
         <span id='user_load_errors'class='errorMessage'></span>
         <div id='users_found' class="user"></div>
@@ -179,17 +179,23 @@
         if (progress >= total) {
           loadUsersButton.style.display = '';
           userLoadingSection.style.display = 'none';
-          
+          loadUsersCancelToken = false;
+          document.getElementById('user_loading_cancel').disabled = false;
         } else {
-          loadUsersButton.style.display = 'none';
-          userLoadingSection.style.display = '';
-
           const load_progress = document.getElementById('user_loading_progress');
           const progress_label = document.getElementById('user_loading_label');
           load_progress.value = progress;
           load_progress.max = total;
           load_progress.innerText = progress_label.innerText = `Loading... (${progress} of ${total})`;
+
+          loadUsersButton.style.display = 'none';
+          userLoadingSection.style.display = '';
         }
+      }
+
+      function cancelLoad() {
+        loadUsersCancelToken = true;
+        document.getElementById('user_loading_cancel').disabled = true;
       }
 
       function setError(error) {
@@ -229,6 +235,7 @@
           }
         }
       }
+
       
     </script>
   </body>

@@ -1,4 +1,5 @@
 let users = new Map();
+let loadUsersCancelToken = false;
 
 function getUsersFromFile(fileUpload) {
 
@@ -89,6 +90,10 @@ async function getUsersByProjectMembers(projectId) {
     let totalPages = 1;
     let resultsCount = 0;
     do {
+        if(loadUsersCancelToken) {
+            reportGetUsersProgress(0,0);
+            break;
+        }
         const response = await Api.getProjectMembers(projectId, page);
         if (response.status == "ERROR") {
             setError(response.message);
@@ -117,6 +122,11 @@ async function getUsersByNamesArray(userNames) {
     
     userNames.sort();
     for(let i = 0; i < userNames.length; i++) {
+        if(loadUsersCancelToken) {
+            reportGetUsersProgress(0,0);
+            break;
+        }
+
         let user = await Api.getUser(userNames[i])
         if (user.status === 'ERROR') {
             setError(user.message);
