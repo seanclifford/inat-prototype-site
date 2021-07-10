@@ -87,6 +87,7 @@ async function getUsersByProjectMembers(projectId) {
 
     let page = 1;
     let totalPages = 1;
+    let resultsCount = 0;
     do {
         const response = await Api.getProjectMembers(projectId, page);
         if (response.status == "ERROR") {
@@ -99,6 +100,8 @@ async function getUsersByProjectMembers(projectId) {
         projectUsers.forEach(user => {
             addUser(user);
         });
+        resultsCount += projectUsers.length;
+        reportGetUsersProgress(resultsCount, response.total_results);
         //console.log(`page=${page} count=${projectMembers.length} users=${users.size}`);
         page++;
     } while (page <= totalPages);
@@ -120,6 +123,7 @@ async function getUsersByNamesArray(userNames) {
         }
         else {
             addUser(user);
+            reportGetUsersProgress(i + 1, userNames.length);
         }
     }
 }

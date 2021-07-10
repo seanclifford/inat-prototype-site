@@ -55,7 +55,7 @@
         </div>
       </li>
       <li>
-        <input type="button" value='Load Users' onclick='loadUsers()'>
+        <input id="load_users_button" type="button" value='Load Users' onclick='loadUsers()'>
         <span id="user_loading" style="display: none;">
           <progress id="user_loading_progress" value="50" max="100">50 of 100</progress>
           <label id="user_loading_label" for="user_loading_progress">50 of 100</label>
@@ -171,6 +171,25 @@
       function onMessageSend(user, currentNum, totalCount) {
         let div = document.getElementById('send_result');
         div.innerHTML = `<p>Sent message ${currentNum} of ${totalCount} to user ${user.login}...</p><progress value="${currentNum}" max="${totalCount}"></<progress>`;
+      }
+
+      function reportGetUsersProgress(progress, total) {
+        const loadUsersButton = document.getElementById('load_users_button');
+        const userLoadingSection = document.getElementById('user_loading');
+        if (progress >= total) {
+          loadUsersButton.style.display = '';
+          userLoadingSection.style.display = 'none';
+          
+        } else {
+          loadUsersButton.style.display = 'none';
+          userLoadingSection.style.display = '';
+
+          const load_progress = document.getElementById('user_loading_progress');
+          const progress_label = document.getElementById('user_loading_label');
+          load_progress.value = progress;
+          load_progress.max = total;
+          load_progress.innerText = progress_label.innerText = `Loading... (${progress} of ${total})`;
+        }
       }
 
       function setError(error) {
