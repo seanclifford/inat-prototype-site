@@ -1,5 +1,6 @@
 const OAUTH_APPLICATION_ID = '5201b81280434411f4f45034781257d6d4ff22124b7f60936d0d5efc114f25c0';
 const REDIRECT_URI = 'https://seanclifford.github.io/inat-prototype-site/oauth_redirect.html'
+let authenticatedUser = null;
 
 async function authRequest()
 {
@@ -85,12 +86,10 @@ async function performTokenRequest(auth_code) {
     const postOptions = Api.postFetchOptions(payload);
     const response = await Api.limiter(async () => {return await fetch(currentSite.url + '/oauth/token', postOptions);});
     
-    if (!response.ok)
-    {
+    if (!response.ok) {
         console.log('Failed during request to get the auth token');
     }
-    else
-    {
+    else {
         const tokenResponse = await response.json();
         storeAccessToken(tokenResponse.access_token);
         clearVerifier();
@@ -107,12 +106,10 @@ async function requestApiToken() {
     const getOptions = Api.getAuthFetchOptions(`Bearer ${accessToken}`);
     const response = await Api.limiter(async () => {return await fetch(currentSite.url + '/users/api_token', getOptions);});
 
-    if (!response.ok)
-    {
+    if (!response.ok) {
         console.log('Failed during request to get the api token');
     }
-    else
-    {
+    else {
         const body = await response.json();
         apiToken = body.api_token;
         setApiToken(apiToken);
@@ -123,7 +120,14 @@ async function requestApiToken() {
 async function getAuthenticatedUser() {
     const apiToken = await getApiToken();
     if (apiToken) {
-        return await Api.getAuthenticatedUser(apiToken)
+        authenticatedUser = await Api.getAuthenticatedUser(apiToken)
+
+        if (authenticatedUser.status === 'ERROR') {
+            setError(authenticatedUser.message);
+            authenticatedUser = null;
+        }
+
+        return authenticatedUser;
     } 
     return null;
 }

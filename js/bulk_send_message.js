@@ -64,7 +64,7 @@ async function getUsersByObservationsCsv(observationIdsCsv) {
 function getUsersByObservations(observations) {
     clearUsers();
 
-    if (observations.status === 'ERROR'){
+    if (observations.status === 'ERROR') {
         setError(observations.message);
     }
     else {
@@ -139,7 +139,10 @@ async function getUsersByNamesArray(userNames) {
 }
 
 function addUser(user) {
-    if (!users.has(user.login)) {
+    if (!users.has(user.login) && 
+        (!authenticatedUser || 
+            authenticatedUser.login !== user.login)) {
+
         users.set(user.login, user);
         addUserResult(user);
     }
