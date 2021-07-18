@@ -15,6 +15,7 @@ class UserInfo extends HTMLElement {
         container.setAttribute('class', 'user_container');
 
         const userImg = document.createElement('img');
+        userImg.setAttribute('class', 'user_img')
 
         const userTextDiv = document.createElement('div');
         userTextDiv.setAttribute('class', 'user_text');
@@ -34,8 +35,9 @@ class UserInfo extends HTMLElement {
             padding-right: 1.2rem;
         }
         
-        .user_container img {
+        .user_img {
             width: 30px;
+            height: 30px;
             border-radius: 50%;
         }
         
@@ -63,6 +65,7 @@ class UserInfo extends HTMLElement {
         }
         .user_remove img {
             width: 15px;
+            height: 15px;
         }
         
         `;
