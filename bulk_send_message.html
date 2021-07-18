@@ -26,8 +26,11 @@
     <h2>Start here:</h2>
     <ol>
       <li>
-        <input type="button" value='Check authentication' onclick='authenticate()'>
-        <div id="authenticated_user" class="user"></div>
+        <input id="authenticate_button" type="button" value='Check authentication' onclick='authenticate()'>
+        <div id="authenticated_user" class="user" style="display:none;">
+          Logged in as: <user-info id="auth_user_info"></user-info>
+          <button onclick="logout()">Logout</button>
+        </div>
       </li>
       <li>
           <legend>Choose data source to load users from:</legend>
@@ -101,14 +104,23 @@
 
       async function authenticate() {
         await Api.ensureAuthenticated();
-        const div = document.getElementById('authenticated_user');
             
         const user = await getAuthenticatedUser();
 
         if (user) {
-          div.innerHTML = "Logged in as: ";
-          div.innerHTML += `<user-info img='${user.icon ?? ''}' login='${user.login}' name='${user.name}'>`;
+          const authUserInfo = document.getElementById('auth_user_info');
+          authUserInfo.setAttribute('img', user.icon);
+          authUserInfo.setAttribute('login', user.login);
+          authUserInfo.setAttribute('name', user.name);
+          document.getElementById('authenticated_user').style.display = '';
+          document.getElementById('authenticate_button').style.display = 'none';
         }
+      }
+      
+      function logout() {
+        clearAllAuthenticationState();
+        document.getElementById('authenticated_user').style.display = 'none';
+        document.getElementById('authenticate_button').style.display = '';
       }
 
       function userLoadChanged() {
