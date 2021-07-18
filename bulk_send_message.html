@@ -96,15 +96,16 @@
     <script>
         (async () => {
           userLoadChanged();
-          const currentSite = await getCurrentSite();
-          
-          const siteHeader = document.getElementById("site_header");
-          siteHeader.setSite(currentSite);
+          await showAuthenticatedUser();
+          await showCurrentSite();
         })();
 
       async function authenticate() {
         await Api.ensureAuthenticated();
-            
+        await showAuthenticatedUser();
+      }
+      
+      async function showAuthenticatedUser() {
         const user = await getAuthenticatedUser();
 
         if (user) {
@@ -116,11 +117,18 @@
           document.getElementById('authenticate_button').style.display = 'none';
         }
       }
-      
+
       function logout() {
         clearAllAuthenticationState();
         document.getElementById('authenticated_user').style.display = 'none';
         document.getElementById('authenticate_button').style.display = '';
+      }
+
+      async function showCurrentSite() {
+        const currentSite = await getCurrentSite();
+
+        const siteHeader = document.getElementById("site_header");
+        siteHeader.setSite(currentSite);
       }
 
       function userLoadChanged() {
