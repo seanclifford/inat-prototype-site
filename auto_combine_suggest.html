@@ -81,6 +81,7 @@
             
             let observationHeaderDiv = document.createElement('div');
             observationHeaderDiv.innerText = observation.id;
+            observationDiv.append(observationHeaderDiv);
             
             let observationFirstPhoto = document.createElement('img');
             observationFirstPhoto.setAttribute('src', observation.photos[0].url);
