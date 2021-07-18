@@ -2,4 +2,4 @@
 
 Using the iNaturalist API - coming up with tools that may make certain things easier.
 
-All this is hacked together as quick as possible. Don't expect best practices or pretty pages here.
+Styling is kept super simple to avoid time spent making things look pretty. Code might be a bit quick and dirty too.

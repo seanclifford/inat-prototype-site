@@ -55,7 +55,10 @@
         </div>
       </li>
       <li>
-        <input id="load_users_button" type="button" value='Load Users' onclick='loadUsers()'>
+        <div id="load_users_section">
+          <input type="button" value='Load Users' onclick='loadUsers()'>
+          <input id="users_clear_button" type="button" style="display:none;" value='Clear All Users' onclick='clearUsers()'>
+        </div>
         <span id="user_loading" style="display: none;">
           <progress id="user_loading_progress" value="50" max="100">50 of 100</progress>
           <label id="user_loading_label" for="user_loading_progress">50 of 100</label>
@@ -154,6 +157,10 @@
         }
 
         setSendButtonText();
+
+        if(users) {
+          document.getElementById('users_clear_button').style.display = '';
+        }
       }      
 
       async function sendMessages(){ 
@@ -174,7 +181,7 @@
       }
 
       function reportGetUsersProgress(progress, total) {
-        const loadUsersButton = document.getElementById('load_users_button');
+        const loadUsersButton = document.getElementById('load_users_section');
         const userLoadingSection = document.getElementById('user_loading');
         if (progress >= total) {
           loadUsersButton.style.display = '';
@@ -206,6 +213,7 @@
       function resetUserResults() {
         document.getElementById('users_found').innerHTML = "";
         document.getElementById('user_load_errors').innerHTML = "";
+        document.getElementById('users_clear_button').style.display = 'none';
       }
 
       function addUserResult(userResult) {
