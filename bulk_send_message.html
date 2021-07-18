@@ -158,9 +158,7 @@
 
         setSendButtonText();
 
-        if(users) {
-          document.getElementById('users_clear_button').style.display = '';
-        }
+        setClearUsersButtonVisibility();
       }      
 
       async function sendMessages(){ 
@@ -213,7 +211,8 @@
       function resetUserResults() {
         document.getElementById('users_found').innerHTML = "";
         document.getElementById('user_load_errors').innerHTML = "";
-        document.getElementById('users_clear_button').style.display = 'none';
+        setSendButtonText();
+        setClearUsersButtonVisibility();
       }
 
       function addUserResult(userResult) {
@@ -232,18 +231,32 @@
         const div = document.getElementById('users_found');
         div.removeChild(userInfoElement);
         setSendButtonText();
+        setClearUsersButtonVisibility();
       }
 
       function setSendButtonText() {
-        if(users) {
-          let sendButton = document.getElementById("send");
+        const sendButton = document.getElementById("send");
+        if(users && users.size > 0) {
           sendButton.value = `Send ${users.size} Message`
-          if (users.length != 1){
+          if (users.size != 1){
             sendButton.value += 's'
           }
         }
+        else {
+          sendButton.value = 'Send Messages';
+        }
       }
 
+      function setClearUsersButtonVisibility()
+      {
+        const buttonStyle = document.getElementById('users_clear_button').style;
+        if(users && users.size > 0) {
+          buttonStyle.display = '';
+        }
+        else {
+          buttonStyle.display = 'none';
+        }
+      }
       
     </script>
   </body>
