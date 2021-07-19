@@ -114,6 +114,7 @@ async function getUsersByNamesCsv(userNamesCsv) {
 }
 
 async function getUsersByNamesArray(userNames) {
+    userNames = userNames.map(s => s.trim());
     userNames.sort();
     for(let i = 0; i < userNames.length; i++) {
         if(loadUsersCancelToken) {
