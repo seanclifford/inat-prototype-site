@@ -128,8 +128,8 @@ async function getUsersByNamesArray(userNames) {
         }
         else {
             addUser(user);
-            reportGetUsersProgress(i + 1, userNames.length);
         }
+        reportGetUsersProgress(i + 1, userNames.length);
     }
 }
 
