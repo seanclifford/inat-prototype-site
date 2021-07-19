@@ -78,7 +78,10 @@
       </li>
       <li>
         <input id="send" type="button" value='Send Messages' onclick='sendMessages()'><br/>
-        <div id="send_result"></div>
+        <div>
+          <p id="send_result"></p>
+          <progress id="send_progress" style="display: none;"></progress>
+        </div>
       </li>
     </ol>
 
@@ -145,13 +148,14 @@
       }
 
       async function loadUsers() {
+        clearLoadUserErrors();
         const userLoadType = document.querySelector('input[name="user_load"]:checked').value;
         switch(userLoadType)
         {
           case 'fileUpload':
             let fileUpload = document.getElementById("fileUpload").files[0];
             if (!fileUpload){
-              setError('No file selected.');
+              setLoadUserError('No file selected.');
               return;
             }
             getUsersFromFile(fileUpload);
@@ -182,20 +186,28 @@
       }      
 
       async function sendMessages(){ 
-        let subject = document.getElementById('subject').value;
-        let message = document.getElementById('message').value;
-        let apiToken = await getApiToken();
-        let div = document.getElementById('send_result');
-        div.innerHTML = '<p>Sending...</p>';
+        const subject = document.getElementById('subject').value;
+        const message = document.getElementById('message').value;
+        const apiToken = await getApiToken();
+        const resultPara = document.getElementById('send_result');
+        resultPara.textContent = 'Sending...';
 
         const result = await sendMessagesToUsers(subject, message, apiToken, onMessageSend);
         
-        div.innerHTML = `<p>${result}</p>`;
+        resultPara.textContent = result;
+
+        const sendProgress = document.getElementById('send_progress');
+        sendProgress.style.display = 'none';
       }
 
       function onMessageSend(user, currentNum, totalCount) {
-        let div = document.getElementById('send_result');
-        div.innerHTML = `<p>Sent message ${currentNum} of ${totalCount} to user ${user.login}...</p><progress value="${currentNum}" max="${totalCount}"></<progress>`;
+        const resultPara = document.getElementById('send_result');
+        resultPara.textContent = `Sent message ${currentNum} of ${totalCount} to user ${user.login}...`;
+        
+        const sendProgress = document.getElementById('send_progress');
+        sendProgress.value = currentNum;
+        sendProgress.max = totalCount;
+        sendProgress.style.display = '';
       }
 
       function reportGetUsersProgress(progress, total) {
@@ -211,7 +223,7 @@
           const progress_label = document.getElementById('user_loading_label');
           load_progress.value = progress;
           load_progress.max = total;
-          load_progress.innerText = progress_label.innerText = `Loading... (${progress} of ${total})`;
+          load_progress.textContent = progress_label.textContent = `Loading... (${progress} of ${total})`;
 
           loadUsersButton.style.display = 'none';
           userLoadingSection.style.display = '';
@@ -223,9 +235,14 @@
         document.getElementById('user_loading_cancel').disabled = true;
       }
 
-      function setError(error) {
+      function setLoadUserError(error) {
         let div = document.getElementById('user_load_errors');
-        div.innerHTML += error + '&nbsp;';
+        div.textContent += error + ' ';
+      }
+
+      function clearLoadUserErrors() {
+        let div = document.getElementById('user_load_errors');
+        div.textContent = '';
       }
       
       function resetUserResults() {

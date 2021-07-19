@@ -53,7 +53,7 @@ function csvToObjectArray(strData) {
 async function getUsersByObservationsCsv(observationIdsCsv) {
     let convertedCsv = observationIdsCsv.replace(/\s/g,'');
     if (convertedCsv.split(',').length > 200) {
-        setError('Loading more than 200 observations at once is not supported.');
+        setLoadUserError('Loading more than 200 observations at once is not supported.');
     }
     else {
         let observations = await Api.getObservations(convertedCsv);
@@ -63,7 +63,7 @@ async function getUsersByObservationsCsv(observationIdsCsv) {
 
 function getUsersByObservations(observations) {
     if (observations.status === 'ERROR') {
-        setError(observations.message);
+        setLoadUserError(observations.message);
     }
     else {
         const obsUsers = observations.map(observation => observation.user);
@@ -92,7 +92,7 @@ async function getUsersByProjectMembers(projectId) {
         }
         const response = await Api.getProjectMembers(projectId, page);
         if (response.status == "ERROR") {
-            setError(response.message);
+            setLoadUserError(response.message);
             break;
         }
         totalPages = Math.ceil(response.total_results / response.per_page);
@@ -123,7 +123,7 @@ async function getUsersByNamesArray(userNames) {
 
         let user = await Api.getUser(userNames[i])
         if (user.status === 'ERROR') {
-            setError(user.message);
+            setLoadUserError(user.message);
         }
         else {
             addUser(user);
