@@ -41,8 +41,8 @@
             const noUser = document.getElementById('no_user');
 
             if (user) {
-                const authUserInfo = authUserDiv.getElementById('user_info');
-                
+                const authUserInfo = document.getElementById('user_info');
+
                 authUserInfo.setAttribute('img', user.icon);
                 authUserInfo.setAttribute('login', user.login);
                 authUserInfo.setAttribute('name', user.name);
