@@ -15,7 +15,10 @@
   
   <body>
     <h1>Testing page for authentication</h1>
-    <div id="authenticated_user"></div>
+    <div id="authenticated_user">
+        Logged in as: <user-info id='user_info'></user-info>
+    </div>
+    <i id="no_user" style="display: none;">No user is authenticated</i>
     <br>
     <input type="button" id="authenticate" value="Log in / authenticate this site" onclick="Api.ensureAuthenticated()">
     <br>
@@ -32,26 +35,24 @@
         })();
         
         async function populateAuthenticatedUser() {
-            let div = document.getElementById('authenticated_user');
+            const user = await getAuthenticatedUser();
             
-            let user = await getAuthenticatedUser();
+            const authUserDiv = document.getElementById('authenticated_user');
+            const noUser = document.getElementById('no_user');
 
-            
             if (user) {
-                div.innerHTML = "Logged in as: ";
+                const authUserInfo = authUserDiv.getElementById('user_info');
                 
-                if (user.icon) {
-                    div.innerHTML += `<img width='30' src='${user.icon}'> `;
-                }
-
-                name = user.login;
-                if (user.name) {
-                    name += ` - <i>${user.name}</i>`
-                }
-                div.innerHTML += name;
+                authUserInfo.setAttribute('img', user.icon);
+                authUserInfo.setAttribute('login', user.login);
+                authUserInfo.setAttribute('name', user.name);
+                
+                authUserDiv.style.display = '';
+                noUser.style.display = 'none';
             }
             else {
-                div.innerHTML = '<i>No user is authenticated</i>'
+                authUserDiv.style.display = 'none';
+                noUser.style.display = '';
             }
         }
 
