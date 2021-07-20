@@ -20,6 +20,15 @@
     <br>
     <input type="button" id="apply_current_site" value="Apply changes" onclick="saveCurrentSite()">
 
+    <template id="site_template">
+      <label>
+        <input type="radio" name="selected_site">
+        <img width='30px'> <span class="site_name"></span>
+      </label> &nbsp;&nbsp;
+      <span style="font-size:70%">(<a target="_blank"></a>)</span>
+      <br/>
+    </template>
+
     <script src="js/constants.js?v=1.0.0"></script>
     <script src="js/api.js?v=1.0.0"></script>
     <script src="js/site.js?v=1.0.0"></script>
@@ -35,14 +44,25 @@
         })();
         
         function addSite(site, isCurrent) {
-            let div = document.getElementById('all_sites');
-            
-            div.innerHTML += `<label>
-              <input type="radio" name="selected_site" value='${site.id}' ${isCurrent?"checked":""}>
-              <img width='30px' src='${site.icon_url}'> ${site.name}
-            </label> &nbsp;&nbsp;
-            <span style="font-size:70%">(<a href="${site.url}" target="_blank">${site.url}</a>)</span>
-            <br/>`;
+            const div = document.getElementById('all_sites');
+            const template = document.getElementById('site_template');
+            const clone = template.content.cloneNode(true);
+
+            const radioButton = clone.querySelector('input');
+            radioButton.value = site.id;
+            radioButton.checked = isCurrent;
+
+            const image = clone.querySelector('img');
+            image.src = site.icon_url;
+
+            const siteName = clone.querySelector('.site_name');
+            siteName.textContent = site.name;
+
+            const siteLink = clone.querySelector('a');
+            siteLink.href = site.url;
+            siteLink.textContent = site.url;
+
+            div.append(clone);
         }
 
         async function saveCurrentSite()
