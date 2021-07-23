@@ -26,7 +26,10 @@
     <h2>Start here:</h2>
     <ol>
       <li>
-        <input id="authenticate_button" type="button" value='Check authentication' onclick='authenticate()'>
+        <div id="authenticate_section" style="font-size: smaller;">
+          <input type="button" value='Check authentication' onclick='authenticate()'>
+          with <span id="authenticate_site_url"></span> (<a href="site_selection.html">change</a>)
+        </div>
         <div id="authenticated_user" class="user" style="display:none;">
           Logged in as: <user-info id="auth_user_info"></user-info>
           <button onclick="logout()">Logout</button>
@@ -117,14 +120,14 @@
           authUserInfo.setAttribute('login', user.login);
           authUserInfo.setAttribute('name', user.name);
           document.getElementById('authenticated_user').style.display = '';
-          document.getElementById('authenticate_button').style.display = 'none';
+          document.getElementById('authenticate_section').style.display = 'none';
         }
       }
 
       function logout() {
         clearAllAuthenticationState();
         document.getElementById('authenticated_user').style.display = 'none';
-        document.getElementById('authenticate_button').style.display = '';
+        document.getElementById('authenticate_section').style.display = '';
       }
 
       async function showCurrentSite() {
@@ -132,6 +135,9 @@
 
         const siteHeader = document.getElementById("site_header");
         siteHeader.setSite(currentSite);
+
+        const authSiteUrl = document.getElementById("authenticate_site_url");
+        authSiteUrl.textContent = new URL(currentSite.url).hostname;
       }
 
       function userLoadChanged() {
