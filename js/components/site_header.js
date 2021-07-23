@@ -41,14 +41,14 @@ class SiteHeader extends HTMLElement {
         shadow.appendChild(wrapper);
         wrapper.appendChild(siteImg);
         wrapper.appendChild(siteTitle);
-        wrapper.innerHTML += ' (';
+        wrapper.appendChild(document.createTextNode(' ('));
         wrapper.appendChild(siteSelectLink);
-        wrapper.innerHTML += ') ';
+        wrapper.appendChild(document.createTextNode(') '));
     }
 
     setSite(site){
         this.shadowRoot.querySelector('.site_img').src = site.icon_url;
-        this.shadowRoot.querySelector('.site_title').innerText = site.site_name_short;
+        this.shadowRoot.querySelector('.site_title').textContent = site.site_name_short;
     }
 }
 

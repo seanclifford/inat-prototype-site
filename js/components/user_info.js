@@ -140,14 +140,14 @@ function updateName(elem, name) {
     if (!userName || userName === 'null') {
         userName = '';
     }
-    userNameDiv.innerText = userName;
+    userNameDiv.textContent = userName;
 }
 
 function updateLogin(elem) {
     const shadow = elem.shadowRoot;
     const userLoginDiv = shadow.querySelector('.user_login');
     
-    userLoginDiv.innerText = elem.loginText();
+    userLoginDiv.textContent = elem.loginText();
 }
 
 function updateOnRemove(elem, onRemove) {

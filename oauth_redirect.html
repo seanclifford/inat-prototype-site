@@ -25,7 +25,7 @@
         await performTokenRequest(auth_code);
 
         let div = document.getElementById('result');
-        div.innerHTML = "Completed requesting access token!";
+        div.textContent = "Completed requesting access token!";
         redirectToPreAuthLocation();
       })();
     </script>
