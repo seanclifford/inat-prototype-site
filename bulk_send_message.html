@@ -31,7 +31,7 @@
     <h2>Start here:</h2>
     <ol>
       <li>
-        <div id="authenticate_section" style="font-size: smaller;">
+        <div id="authenticate_section" style="font-size: smaller;display:none;">
           <input type="button" value='Check authentication' onclick='authenticate()'>
           with <span id="authenticate_site_url"></span> (<a href="site_selection.html">change</a>)
         </div>
@@ -126,6 +126,10 @@
           authUserInfo.setAttribute('name', user.name);
           document.getElementById('authenticated_user').style.display = '';
           document.getElementById('authenticate_section').style.display = 'none';
+        }
+        else {
+          document.getElementById('authenticated_user').style.display = 'none';
+          document.getElementById('authenticate_section').style.display = '';
         }
       }
 
