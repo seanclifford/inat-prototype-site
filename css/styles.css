@@ -28,3 +28,7 @@ body {
 li {
     margin-top: 5px;
 }
+
+fieldset {
+    width: fit-content;
+}

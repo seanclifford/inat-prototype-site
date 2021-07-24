@@ -23,6 +23,17 @@
     
     <h1>Bulk Send Messages prototype for iNaturalist</h1> 
     
+    <fieldset>
+      <legend>Information</legend>
+      This tool can be used to message many iNaturalist users at once, and may be a great way to contact many people about something you think they'd like to hear.<br>
+      Please note that using this for spam or harrasment will likely get your account and IP blocked by iNaturalist.<br>
+      Also, you may like to consider that there may be another way of contacting people if you have that available such as posting a project journal entry to reach everyone on a project for example.
+    </fieldset>
+    <fieldset>
+      <legend>Warning</legend>
+      This page won't work well on Internet Explorer, or old versions of browsers.
+    </fieldset>
+
     <h2>Start here:</h2>
     <ol>
       <li>
@@ -37,14 +48,14 @@
       </li>
       <li>
           <legend>Choose data source to load users from:</legend>
-          <label><input type="radio" name="user_load" value="user_ids" onchange="userLoadChanged()" checked>User IDs</label><br>
+          <label><input type="radio" name="user_load" value="user_ids" onchange="userLoadChanged()" checked>User logins or IDs</label><br>
           <label><input type="radio" name="user_load" value="fileUpload" onchange="userLoadChanged()">Export file (CSV or JSON)</label><br>
           <label><input type="radio" name="user_load" value="observation_ids" onchange="userLoadChanged()">Observation IDs</label><br>
           <label><input type="radio" name="user_load" value="project_id" onchange="userLoadChanged()">Project ID</label><br>
       </li>
       <li>
         <div id="user_ids_container">
-          Enter comma separated list of user ids. e.g. johnsmith736,khaleesi89<br/>
+          Enter comma separated list of user logins or ids. e.g. johnsmith736,khaleesi89<br/>
           <input type="search" id="user_ids">
         </div>
         <div id="fileUpload_container">
@@ -56,7 +67,7 @@
           <input type="search" id="observation_ids">
         </div>
         <div id="project_id_container">
-          Enter project id to load its members. This is in the url on the project page. e.g. stinkbugs-of-the-world<br/>
+          Enter a project id to load its members. This is in the url on the project page. e.g. example-project-name<br/>
           <input type="search" id="project_id">
         </div>
       </li>
@@ -76,7 +87,7 @@
       <li>Enter subject <br/>
         <input type="text" id="subject">
       </li>
-      <li>Enter message. You can use <i>[login]</i> in your message for their login name.<br/>
+      <li>Enter message. You can use <i>[login]</i> in your message, and it will be replaced with their login name.<br/>
         <textarea id='message'></textarea>
       </li>
       <li>
