@@ -40,57 +40,59 @@
           <button onclick="logout()">Logout</button>
         </div>
       </li>
-      <li>
-          <legend>Choose data source to load users from:</legend>
-          <label><input type="radio" name="user_load" value="user_ids" onchange="userLoadChanged()" checked>User logins or IDs</label><br>
-          <label><input type="radio" name="user_load" value="fileUpload" onchange="userLoadChanged()">Export file (CSV or JSON)</label><br>
-          <label><input type="radio" name="user_load" value="observation_ids" onchange="userLoadChanged()">Observation IDs</label><br>
-          <label><input type="radio" name="user_load" value="project_id" onchange="userLoadChanged()">Project ID</label><br>
-      </li>
-      <li>
-        <div id="user_ids_container">
-          Enter comma separated list of user logins or ids. e.g. johnsmith736,khaleesi89<br/>
-          <input type="search" id="user_ids">
-        </div>
-        <div id="fileUpload_container">
-          Load from observations export file (CSV or JSON format) to message the observers of the observations.<br/>
-          <input type="file" id="fileUpload" accept=".csv,.json" />
-        </div>
-        <div id="observation_ids_container">
-          Enter comma separated list of observation ids to message the observers of the observations.<br/>
-          <input type="search" id="observation_ids">
-        </div>
-        <div id="project_id_container">
-          Enter a project id to load its members. This is in the url on the project page. e.g. example-project-name<br/>
-          <input type="search" id="project_id">
-        </div>
-      </li>
-      <li>
-        <div id="load_users_section">
-          <input type="button" value='Load Users' onclick='loadUsers()'>
-          <input id="users_clear_button" type="button" style="display:none;" value='Clear All Users' onclick='clearUsers()'>
-        </div>
-        <span id="user_loading" style="display: none;">
-          <progress id="user_loading_progress" value="50" max="100">50 of 100</progress>
-          <label id="user_loading_label" for="user_loading_progress">50 of 100</label>
-          <button id="user_loading_cancel" onclick="cancelLoad()">Cancel</button>
-        </span>
-        <span id='user_load_errors'class='errorMessage'></span>
-        <div id='users_found' class="user"></div>
-      </li>
-      <li>Enter subject <br/>
-        <input type="text" id="subject">
-      </li>
-      <li>Enter message. You can use <i>[login]</i> in your message, and it will be replaced with their login name.<br/>
-        <textarea id='message'></textarea>
-      </li>
-      <li>
-        <input id="send" type="button" value='Send Messages' onclick='sendMessages()'><br/>
-        <div>
-          <p id="send_result"></p>
-          <progress id="send_progress" style="display: none;"></progress>
-        </div>
-      </li>
+      <fieldset id="non_auth_fields" disabled style="border: none;display:inherit;margin:0;padding:0;">
+        <li>
+            <legend>Choose data source to load users from:</legend>
+            <label><input type="radio" name="user_load" value="user_ids" onchange="userLoadChanged()" checked>User logins or IDs</label><br>
+            <label><input type="radio" name="user_load" value="fileUpload" onchange="userLoadChanged()">Export file (CSV or JSON)</label><br>
+            <label><input type="radio" name="user_load" value="observation_ids" onchange="userLoadChanged()">Observation IDs</label><br>
+            <label><input type="radio" name="user_load" value="project_id" onchange="userLoadChanged()">Project ID</label><br>
+        </li>
+        <li>
+          <div id="user_ids_container">
+            Enter comma separated list of user logins or ids. e.g. johnsmith736,khaleesi89<br/>
+            <input type="search" id="user_ids">
+          </div>
+          <div id="fileUpload_container">
+            Load from observations export file (CSV or JSON format) to message the observers of the observations.<br/>
+            <input type="file" id="fileUpload" accept=".csv,.json" />
+          </div>
+          <div id="observation_ids_container">
+            Enter comma separated list of observation ids to message the observers of the observations.<br/>
+            <input type="search" id="observation_ids">
+          </div>
+          <div id="project_id_container">
+            Enter a project id to load its members. This is in the url on the project page. e.g. example-project-name<br/>
+            <input type="search" id="project_id">
+          </div>
+        </li>
+        <li>
+          <div id="load_users_section">
+            <input type="button" value='Load Users' onclick='loadUsers()'>
+            <input id="users_clear_button" type="button" style="display:none;" value='Clear All Users' onclick='clearUsers()'>
+          </div>
+          <span id="user_loading" style="display: none;">
+            <progress id="user_loading_progress" value="50" max="100">50 of 100</progress>
+            <label id="user_loading_label" for="user_loading_progress">50 of 100</label>
+            <button id="user_loading_cancel" onclick="cancelLoad()">Cancel</button>
+          </span>
+          <span id='user_load_errors'class='errorMessage'></span>
+          <div id='users_found' class="user"></div>
+        </li>
+        <li>Enter subject <br/>
+          <input type="text" id="subject">
+        </li>
+        <li>Enter message. You can use <i>[login]</i> in your message, and it will be replaced with their login name.<br/>
+          <textarea id='message'></textarea>
+        </li>
+        <li>
+          <input id="send" type="button" value='Send Messages' onclick='sendMessages()'><br/>
+          <div>
+            <p id="send_result"></p>
+            <progress id="send_progress" style="display: none;"></progress>
+          </div>
+        </li>
+      </fieldset>
     </ol>
 
     <br>
@@ -126,17 +128,18 @@
           authUserInfo.setAttribute('name', user.name);
           document.getElementById('authenticated_user').style.display = '';
           document.getElementById('authenticate_section').style.display = 'none';
+          document.getElementById('non_auth_fields').disabled = false;
         }
         else {
           document.getElementById('authenticated_user').style.display = 'none';
           document.getElementById('authenticate_section').style.display = '';
+          document.getElementById('non_auth_fields').disabled = true;
         }
       }
 
       function logout() {
         clearAllAuthenticationState();
-        document.getElementById('authenticated_user').style.display = 'none';
-        document.getElementById('authenticate_section').style.display = '';
+        showAuthenticatedUser();
       }
 
       async function showCurrentSite() {
