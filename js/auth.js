@@ -37,15 +37,15 @@ function clearVerifier() {
 }
 
 function storeAccessToken(accessToken) {
-    localStorage.setItem('auth_access_token', accessToken);
+    sessionStorage.setItem('auth_access_token', accessToken);
 }
 
 function getAccessToken() {
-    return localStorage.getItem('auth_access_token');
+    return sessionStorage.getItem('auth_access_token');
 }
 
 function clearAccessToken() {
-    localStorage.removeItem('auth_access_token');
+    sessionStorage.removeItem('auth_access_token');
 }
 
 async function getApiToken() {
