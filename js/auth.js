@@ -1,5 +1,5 @@
 const OAUTH_APPLICATION_ID = '5201b81280434411f4f45034781257d6d4ff22124b7f60936d0d5efc114f25c0';
-const REDIRECT_URI = 'https://seanclifford.github.io/inat-prototype-site/oauth_redirect.html'
+const REDIRECT_URI = `${THIS_SITE_URI}/oauth_redirect.html`
 let authenticatedUser = null;
 
 async function authRequest()

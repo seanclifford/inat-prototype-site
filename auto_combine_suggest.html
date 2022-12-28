@@ -59,16 +59,23 @@
             siteHeader.setSite(currentSite);
         })();
 
-      async function checkObservations() {
+      function getObservationIdCsv() {
         const observationIdsCsv = document.getElementById("observation_ids").value;
         const convertedCsv = observationIdsCsv.replace(/\s/g,'');
-        const observations = await Api.getObservations(convertedCsv);
+        return convertedCsv;
+      }
+
+      async function checkObservations() {
+        const observations = await Api.getObservations(getObservationIdCsv());
         let observationsDiv = document.getElementById("observations_found");
+        observationsDiv.innerHTML = "";
         const distinctUserLogins = [...new Set(observations.map(o => o.user.login))];
         if (distinctUserLogins.length > 1) {
           observationsDiv.textContent = `These observations are not owned by the same user. You have entered observations for: ${distinctUserLogins.toString()}`;
         }
         else {
+          observationsDiv.textContent = '';
+          
           let author = observations[0].user;
           let authorUserInfo = document.createElement('user-info');
           authorUserInfo.setAttribute('img', author.icon_url);
@@ -76,27 +83,55 @@
           authorUserInfo.setAttribute('name', author.name);
           observationsDiv.appendChild(authorUserInfo);
 
-          observations.forEach(observation => {
+          observations.forEach(async (observation) => {
             let observationDiv = document.createElement('div');
             
             let observationHeaderDiv = document.createElement('div');
-            observationHeaderDiv.textContent = observation.id;
+            let observationLink = document.createElement('a');
+            observationLink.href = await getSiteUrl(`/observations/${observation.id}`);
+            observationLink.textContent = `${observation.id} - ${observation.species_guess}`;
+            observationHeaderDiv.append(observationLink);
             observationDiv.append(observationHeaderDiv);
-            
-            let observationFirstPhoto = document.createElement('img');
-            observationFirstPhoto.setAttribute('src', observation.photos[0].url);
 
-            observationDiv.appendChild(observationFirstPhoto);
+            let observationDateTimeDiv = document.createElement('div');
+            observationDateTimeDiv.textContent = observation.observed_on_string;
+            observationDiv.append(observationDateTimeDiv);
+            
+            if (observation.photos.length > 0) {
+              let observationFirstPhoto = document.createElement('img');
+              observationFirstPhoto.setAttribute('src', observation.photos[0].url);
+
+              observationDiv.appendChild(observationFirstPhoto);
+            }
+
+            let statsList = document.createElement('ul');
+
+            let photoCountItem = document.createElement('li');
+            photoCountItem.textContent = `Photos: ${observation.photos.length}`;
+            statsList.appendChild(photoCountItem);
+
+            let idCountItem = document.createElement('li');
+            idCountItem.textContent = `IDs: ${observation.identifications.length}`;
+            statsList.appendChild(idCountItem);
+
+            let commentsCountItem = document.createElement('li');
+            commentsCountItem.textContent = `Comments: ${observation.comments.length}`;
+            statsList.appendChild(commentsCountItem);
+
+            observationDiv.appendChild(statsList);
 
             observationsDiv.appendChild(observationDiv);
           });
         }
-        //TODO: complete
       }
 
       function generateLink() {
-        //TODO: implement
-      }     
+        const autoCombineUrl = new URL(`${THIS_SITE_URI}/auto_combine.html`);
+        autoCombineUrl.searchParams.append('observation_ids', getObservationIdCsv())
+
+        const linkTextBox = document.getElementById('link');
+        linkTextBox.value = autoCombineUrl.toString();
+      }
     </script>
   </body>
 </html>

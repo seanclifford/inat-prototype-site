@@ -37,3 +37,9 @@ function clearSites() {
     sessionStorage.removeItem('all_sites');
     localStorage.removeItem('current_site');
 }
+
+async function getSiteUrl(path) {
+    const currentSite = await getCurrentSite();
+    const url = new URL(path, currentSite.url);
+    return url.toString();
+}
