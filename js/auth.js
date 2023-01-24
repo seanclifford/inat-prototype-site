@@ -125,7 +125,7 @@ async function requestApiToken() {
     }
     else {
         const body = await response.json();
-        apiToken = body.api_token;
+        const apiToken = body.api_token;
         setApiToken(apiToken);
         return apiToken;
     }
