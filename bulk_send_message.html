@@ -99,220 +99,25 @@
     <br>
     <h5>Still to work on for this prototype: <a href="https://github.com/seanclifford/inat-prototype-site/projects/1">Github project todo list</a></h5>
   
-    <script src="js/constants.js?v=1.0.0"></script>
-    <script src="js/api.js?v=1.0.0"></script>
-    <script src="js/bulk_send_message.js?v=1.0.0"></script>
-    <script src="js/auth.js?v=1.0.0"></script>
-    <script src="js/site.js?v=1.0.0"></script>
+    <script src="js/bulk_send_message.js?v=1.0.0" type="module"></script>
     <script src="js/components/site_header.js?v=1.0.0"></script>
     <script src="js/components/user_info.js?v=1.0.0"></script>
-    <script>
-        (async () => {
-          userLoadChanged();
-          await showAuthenticatedUser();
-          await showCurrentSite();
-        })();
+    <script type="module">
+      import { userLoadChanged, showAuthenticatedUser, showCurrentSite, authenticate, loadUsers, sendMessages, clearUsers, cancelLoad, logout } from "./js/bulk_send_message.js"
 
-      async function authenticate() {
-        await Api.ensureAuthenticated();
+      globalThis.authenticate = authenticate;
+      globalThis.loadUsers = loadUsers;
+      globalThis.sendMessages = sendMessages
+      globalThis.clearUsers = clearUsers;
+      globalThis.cancelLoad = cancelLoad;
+      globalThis.userLoadChanged = userLoadChanged;
+      globalThis.logout = logout;
+      
+      (async () => {
+        userLoadChanged();
         await showAuthenticatedUser();
-      }
-      
-      async function showAuthenticatedUser() {
-        const user = await getAuthenticatedUser();
-
-        if (user) {
-          const authUserInfo = document.getElementById('auth_user_info');
-          authUserInfo.setAttribute('img', user.icon);
-          authUserInfo.setAttribute('login', user.login);
-          authUserInfo.setAttribute('name', user.name);
-          document.getElementById('authenticated_user').style.display = '';
-          document.getElementById('authenticate_section').style.display = 'none';
-          document.getElementById('non_auth_fields').disabled = false;
-        }
-        else {
-          document.getElementById('authenticated_user').style.display = 'none';
-          document.getElementById('authenticate_section').style.display = '';
-          document.getElementById('non_auth_fields').disabled = true;
-        }
-      }
-
-      function logout() {
-        clearAllAuthenticationState();
-        showAuthenticatedUser();
-      }
-
-      async function showCurrentSite() {
-        const currentSite = await getCurrentSite();
-
-        const siteHeader = document.getElementById("site_header");
-        siteHeader.setSite(currentSite);
-
-        const authSiteUrl = document.getElementById("authenticate_site_url");
-        authSiteUrl.textContent = new URL(currentSite.url).hostname;
-      }
-
-      function userLoadChanged() {
-        const radioButtons = document.getElementsByName("user_load");
-        for (i = 0; i < radioButtons.length; i++) {
-          let radioButton = radioButtons[i];
-          let inputContainerDisplay = 'none';
-          if (radioButton.checked) {
-            inputContainerDisplay = 'block';
-          }
-          const inputContainer = document.getElementById(`${radioButton.value}_container`);
-          inputContainer.style.display = inputContainerDisplay;
-        }
-      }
-
-      async function loadUsers() {
-        clearLoadUserErrors();
-        const userLoadType = document.querySelector('input[name="user_load"]:checked').value;
-        switch(userLoadType)
-        {
-          case 'fileUpload':
-            let fileUpload = document.getElementById("fileUpload").files[0];
-            if (!fileUpload){
-              setLoadUserError('No file selected.');
-              return;
-            }
-            getUsersFromFile(fileUpload);
-            break;
-
-          case 'user_ids':
-            let userNamesCsv = document.getElementById("user_ids").value;
-            await getUsersByNamesCsv(userNamesCsv);
-            break;
-
-          case 'observation_ids':
-            let observationIdsCsv = document.getElementById("observation_ids").value;
-            await getUsersByObservationsCsv(observationIdsCsv);
-            break;
-
-          case 'project_id':
-            let projectId = document.getElementById("project_id").value;
-            await getUsersByProjectMembers(projectId);
-            break;
-
-          default:
-            alert('Enter some user names or observation ids, observations file or project id')
-        }
-
-        setSendButtonText();
-
-        setClearUsersButtonVisibility();
-      }      
-
-      async function sendMessages(){ 
-        const subject = document.getElementById('subject').value;
-        const message = document.getElementById('message').value;
-        const apiToken = await getApiToken();
-        const resultPara = document.getElementById('send_result');
-        resultPara.textContent = 'Sending...';
-
-        const result = await sendMessagesToUsers(subject, message, apiToken, onMessageSend);
-        
-        resultPara.textContent = result;
-
-        const sendProgress = document.getElementById('send_progress');
-        sendProgress.style.display = 'none';
-      }
-
-      function onMessageSend(user, currentNum, totalCount) {
-        const resultPara = document.getElementById('send_result');
-        resultPara.textContent = `Sent message ${currentNum} of ${totalCount} to user ${user.login}...`;
-        
-        const sendProgress = document.getElementById('send_progress');
-        sendProgress.value = currentNum;
-        sendProgress.max = totalCount;
-        sendProgress.style.display = '';
-      }
-
-      function reportGetUsersProgress(progress, total) {
-        const loadUsersButton = document.getElementById('load_users_section');
-        const userLoadingSection = document.getElementById('user_loading');
-        if (progress >= total) {
-          loadUsersButton.style.display = '';
-          userLoadingSection.style.display = 'none';
-          loadUsersCancelToken = false;
-          document.getElementById('user_loading_cancel').disabled = false;
-        } else {
-          const load_progress = document.getElementById('user_loading_progress');
-          const progress_label = document.getElementById('user_loading_label');
-          load_progress.value = progress;
-          load_progress.max = total;
-          load_progress.textContent = progress_label.textContent = `Loading... (${progress} of ${total})`;
-
-          loadUsersButton.style.display = 'none';
-          userLoadingSection.style.display = '';
-        }
-      }
-
-      function cancelLoad() {
-        loadUsersCancelToken = true;
-        document.getElementById('user_loading_cancel').disabled = true;
-      }
-
-      function setLoadUserError(error) {
-        let div = document.getElementById('user_load_errors');
-        div.textContent += error + ' ';
-      }
-
-      function clearLoadUserErrors() {
-        let div = document.getElementById('user_load_errors');
-        div.textContent = '';
-      }
-      
-      function resetUserResults() {
-        document.getElementById('users_found').innerHTML = "";
-        document.getElementById('user_load_errors').innerHTML = "";
-        setSendButtonText();
-        setClearUsersButtonVisibility();
-      }
-
-      function addUserResult(userResult) {
-        let div = document.getElementById('users_found');
-        let userInfo = document.createElement('user-info');
-        userInfo.setAttribute('img', userResult.icon);
-        userInfo.setAttribute('login', userResult.login);
-        userInfo.setAttribute('name', userResult.name);
-        userInfo.setAttribute('onremove', 'removeUserFromResults(this)');
-        div.appendChild(userInfo);
-      }
-
-      function removeUserFromResults(userInfoElement) {
-        const userLogin = userInfoElement.getAttribute('login');
-        removeUser(userLogin);
-        const div = document.getElementById('users_found');
-        div.removeChild(userInfoElement);
-        setSendButtonText();
-        setClearUsersButtonVisibility();
-      }
-
-      function setSendButtonText() {
-        const sendButton = document.getElementById("send");
-        if(users && users.size > 0) {
-          sendButton.value = `Send ${users.size} Message`
-          if (users.size != 1){
-            sendButton.value += 's'
-          }
-        }
-        else {
-          sendButton.value = 'Send Messages';
-        }
-      }
-
-      function setClearUsersButtonVisibility()
-      {
-        const buttonStyle = document.getElementById('users_clear_button').style;
-        if(users && users.size > 0) {
-          buttonStyle.display = '';
-        }
-        else {
-          buttonStyle.display = 'none';
-        }
-      }
-      
+        await showCurrentSite();
+      })();
     </script>
   </body>
 </html>

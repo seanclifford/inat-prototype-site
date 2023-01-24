@@ -1,40 +1,13 @@
+import { getFetchOptions, getAuthFetchOptions, postAuthFetchOptions } from "./fetch-options.js";
+import { limit } from "./api-limiter.js";
+
+//const API_ENDPOINT = 'http://localhost:4000/v1/';
 const API_ENDPOINT = 'https://api.inaturalist.org/v1/';
 
-const delay = ms => new Promise(res => setTimeout(res, ms));
-
-//Rate limiter
-var limitFactory = function(){
-    const LIMIT = 1000;
-    var nextTime = window.performance.now();
-    var difference = 0;
-    return async function limit(func){
-        
-        difference = (nextTime - window.performance.now());
-        
-        if (difference > 0) {
-            nextTime += LIMIT;
-            await delay(difference);
-        }
-        else {
-            nextTime = window.performance.now() + LIMIT;
-        }
-        return func();
-    }
-}
-
-var Api = {
-    limiter: limitFactory(),
-    ensureAuthenticated: async function()
-    {
-        token = await getApiToken();
-        if (!token) {
-            storePreAuthPage();
-            await authRequest();
-        }
-    },
+export const Api = {
     getUser: async function(userId) {
         
-        let response = await Api.limiter(async () => { return await fetch(API_ENDPOINT + 'users/' + userId, Api.getFetchOptions);});
+        let response = await limit(async () => { return await fetch(API_ENDPOINT + 'users/' + userId, getFetchOptions());});
         if (!response.ok) {
             return {
                 status: 'ERROR',
@@ -47,7 +20,7 @@ var Api = {
         }
     },
     getProjectMembers: async function(projectId, page) {
-        let response = await Api.limiter(async () => { return await fetch(`${API_ENDPOINT}projects/${projectId}/members?page=${page}&per_page=100&order_by=login`, Api.getFetchOptions);});
+        let response = await limit(async () => { return await fetch(`${API_ENDPOINT}projects/${projectId}/members?page=${page}&per_page=100&order_by=login`, getFetchOptions());});
         if (!response.ok) {
             return {
                 status: 'ERROR',
@@ -66,7 +39,7 @@ var Api = {
                 message: 'No observation ids entered.'
             }
         }
-        let response = await Api.limiter(async () => { return await fetch(API_ENDPOINT + 'observations/' + observationIds, Api.getFetchOptions);});
+        let response = await limit(async () => { return await fetch(API_ENDPOINT + 'observations/' + observationIds, getFetchOptions());});
         if (!response.ok) {
             return {
                 status: 'ERROR',
@@ -79,7 +52,7 @@ var Api = {
         }
     },
     getSites: async function() {
-        let response = await Api.limiter(async () => { return await fetch(API_ENDPOINT + 'sites/', Api.getFetchOptions);});
+        let response = await limit(async () => { return await fetch(API_ENDPOINT + 'sites/', getFetchOptions());});
         if (!response.ok) {
             return {
                 status: 'ERROR',
@@ -93,7 +66,7 @@ var Api = {
     },
     sendMessage: async function(toUser, subject, message, authToken) {
         //replace logic with comment to test without sending messages.
-        //await Api.limiter(async () => {await delay(500);});
+        //await limit(async () => {await delay(500);});
         //return { status: 'OK' };
         
         let bodyObj = {
@@ -103,7 +76,7 @@ var Api = {
                 "body": message
             }
         };
-        let response = await Api.limiter(async () => { return await fetch(API_ENDPOINT + 'messages', Api.postAuthFetchOptions(bodyObj, authToken));});
+        let response = await limit(async () => { return await fetch(API_ENDPOINT + 'messages', postAuthFetchOptions(bodyObj, authToken));});
         if (response.ok) {
             return {status: 'OK'}
         }
@@ -119,7 +92,7 @@ var Api = {
         }
     },
     getAuthenticatedUser: async function(authToken) {
-        let response = await Api.limiter(async () => { return await fetch(API_ENDPOINT + 'users/me', Api.getAuthFetchOptions(authToken));});
+        let response = await limit(async () => { return await fetch(API_ENDPOINT + 'users/me', getAuthFetchOptions(authToken));});
         if (!response.ok) {
             return {
                 status: 'ERROR',
@@ -130,41 +103,5 @@ var Api = {
             let body = await response.json();
             return body.results[0];
         }
-    },
-    getFetchOptions: {
-        method: 'GET',
-        headers: {
-            'X-Via': USER_AGENT
-        }
-    },
-    getAuthFetchOptions: function(authToken) {
-        return {
-            method: 'GET',
-            headers: {
-                'X-Via': USER_AGENT,
-                'Authorization': authToken
-            }
-        };
-    },
-    postFetchOptions: function(bodyObj) {
-        return {
-            method: 'POST',
-            headers: {
-                'X-Via': USER_AGENT,
-                'Content-Type': 'application/json;charset=utf-8',
-            },
-            body: JSON.stringify(bodyObj)
-        };
-    },
-    postAuthFetchOptions: function(bodyObj, authToken) {
-        return {
-            method: 'POST',
-            headers: {
-                'X-Via': USER_AGENT,
-                'Content-Type': 'application/json;charset=utf-8',
-                'Authorization': authToken
-            },
-            body: JSON.stringify(bodyObj)
-        };
     }
 }

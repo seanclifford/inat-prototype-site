@@ -20,17 +20,19 @@
     </div>
     <i id="no_user" style="display: none;">No user is authenticated</i>
     <br>
-    <input type="button" id="authenticate" value="Log in / authenticate this site" onclick="Api.ensureAuthenticated()">
+    <input type="button" id="authenticate" value="Log in / authenticate this site" onclick="ensureAuthenticated()">
     <br>
     <br>
     <input type="button" id="logout" value="Logout" onclick="logout()">
 
-    <script src="js/constants.js?v=1.0.0"></script>
-    <script src="js/api.js?v=1.0.0"></script>
-    <script src="js/auth.js?v=1.0.0"></script>
-    <script src="js/site.js?v=1.0.0"></script>
     <script src="js/components/user_info.js?v=1.0.0"></script>
-    <script>
+    <script type="module">
+        import { getAuthenticatedUser } from "./js/user.js"
+        import { clearAllAuthenticationState, ensureAuthenticated } from "./js/auth.js"
+        
+        globalThis.ensureAuthenticated = ensureAuthenticated;
+        globalThis.logout = logout;
+
         (async () => {
             await populateAuthenticatedUser();
         })();

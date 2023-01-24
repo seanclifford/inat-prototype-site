@@ -1,6 +1,20 @@
+import { getAuthFetchOptions, postFetchOptions } from "./fetch-options.js";
+import { limit } from "./api-limiter.js";
+import { THIS_SITE_URI } from "./constants.js";
+import { getCurrentSite } from "./site.js";
+
 const OAUTH_APPLICATION_ID = '5201b81280434411f4f45034781257d6d4ff22124b7f60936d0d5efc114f25c0';
 const REDIRECT_URI = `${THIS_SITE_URI}/oauth_redirect.html`
-let authenticatedUser = null;
+export let authenticatedUser = null;
+
+export async function ensureAuthenticated()
+{
+    const token = await getApiToken();
+    if (!token) {
+        storePreAuthPage();
+        await authRequest();
+    }
+}
 
 async function authRequest()
 {
@@ -19,7 +33,7 @@ function storePreAuthPage() {
     sessionStorage.setItem('pre_auth_location', window.location.href);
 }
 
-function redirectToPreAuthLocation() {
+export function redirectToPreAuthLocation() {
     const priorLocation = sessionStorage.getItem('pre_auth_location');
     window.location.replace(priorLocation);
 }
@@ -48,7 +62,7 @@ function clearAccessToken() {
     sessionStorage.removeItem('auth_access_token');
 }
 
-async function getApiToken() {
+export async function getApiToken() {
     let apiToken = sessionStorage.getItem('api_token');
 
     if (apiToken) {
@@ -66,13 +80,13 @@ function clearApiToken() {
     sessionStorage.removeItem('api_token');
 }
 
-function clearAllAuthenticationState() {
+export function clearAllAuthenticationState() {
     clearVerifier();
     clearAccessToken();
     clearApiToken();
 }
 
-async function performTokenRequest(auth_code) {
+export async function performTokenRequest(auth_code) {
 
     const verifier = getVerifier();
     const payload = {
@@ -83,8 +97,8 @@ async function performTokenRequest(auth_code) {
         code_verifier: verifier
     }
     const currentSite = await getCurrentSite();
-    const postOptions = Api.postFetchOptions(payload);
-    const response = await Api.limiter(async () => {return await fetch(currentSite.url + '/oauth/token', postOptions);});
+    const postOptions = postFetchOptions(payload);
+    const response = await limit(async () => {return await fetch(currentSite.url + '/oauth/token', postOptions);});
     
     if (!response.ok) {
         console.log('Failed during request to get the auth token');
@@ -103,8 +117,8 @@ async function requestApiToken() {
         return null;
     }
     const currentSite = await getCurrentSite();
-    const getOptions = Api.getAuthFetchOptions(`Bearer ${accessToken}`);
-    const response = await Api.limiter(async () => {return await fetch(currentSite.url + '/users/api_token', getOptions);});
+    const getOptions = getAuthFetchOptions(`Bearer ${accessToken}`);
+    const response = await limit(async () => {return await fetch(currentSite.url + '/users/api_token', getOptions);});
 
     if (!response.ok) {
         console.log('Failed during request to get the api token');
@@ -115,21 +129,6 @@ async function requestApiToken() {
         setApiToken(apiToken);
         return apiToken;
     }
-}
-
-async function getAuthenticatedUser() {
-    const apiToken = await getApiToken();
-    if (apiToken) {
-        authenticatedUser = await Api.getAuthenticatedUser(apiToken)
-
-        if (authenticatedUser.status === 'ERROR') {
-            setError(authenticatedUser.message);
-            authenticatedUser = null;
-        }
-
-        return authenticatedUser;
-    } 
-    return null;
 }
 
 //Below this line is some code pulled from https://github.com/aaronpk/pkce-vanilla-js
@@ -186,6 +185,6 @@ function base64urlencode(str) {
 
 // Return the base64-urlencoded sha256 hash for the PKCE challenge
 async function pkceChallengeFromVerifier(v) {
-    hashed = await sha256(v);
+    const hashed = await sha256(v);
     return base64urlencode(hashed);
 }
