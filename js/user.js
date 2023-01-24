@@ -4,7 +4,7 @@ import { Api } from "./api.js";
 export async function getAuthenticatedUser() {
     const apiToken = await getApiToken();
     if (apiToken) {
-        authenticatedUser = await Api.getAuthenticatedUser(apiToken)
+        let authenticatedUser = await Api.getAuthenticatedUser(apiToken);
 
         if (authenticatedUser.status === 'ERROR') {
             console.error(authenticatedUser.message);
