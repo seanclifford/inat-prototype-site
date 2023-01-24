@@ -89,8 +89,10 @@
 
           observations.forEach(async (observation) => {
             let observationDiv = document.createElement('div');
+            observationDiv.setAttribute('class', 'observation');
             
             let observationHeaderDiv = document.createElement('div');
+            observationHeaderDiv.setAttribute('class', 'observation_header');
             let observationLink = document.createElement('a');
             observationLink.href = await getSiteUrl(`/observations/${observation.id}`);
             observationLink.textContent = `${observation.id} - ${observation.species_guess}`;
@@ -102,31 +104,52 @@
             observationDiv.append(observationDateTimeDiv);
             
             if (observation.photos.length > 0) {
-              let observationFirstPhoto = document.createElement('img');
-              observationFirstPhoto.setAttribute('src', observation.photos[0].url);
+              const observationFirstPhoto = document.createElement('img');
+              const smallPhotoUrl = setImageSizeUrl(observation.photos[0].url, 'small');
+              observationFirstPhoto.setAttribute('src', smallPhotoUrl);
 
               observationDiv.appendChild(observationFirstPhoto);
             }
 
-            let statsList = document.createElement('ul');
+            const statsList = document.createElement('div');
+            statsList.setAttribute('class', 'observation_info');
 
-            let photoCountItem = document.createElement('li');
+            const photoCountItem = document.createElement('div');
             photoCountItem.textContent = `Photos: ${observation.photos.length}`;
             statsList.appendChild(photoCountItem);
 
-            let idCountItem = document.createElement('li');
+            const idCountItem = document.createElement('div');
             idCountItem.textContent = `IDs: ${observation.identifications.length}`;
             statsList.appendChild(idCountItem);
 
-            let commentsCountItem = document.createElement('li');
+            const commentsCountItem = document.createElement('div');
             commentsCountItem.textContent = `Comments: ${observation.comments.length}`;
             statsList.appendChild(commentsCountItem);
+
+            const qualityGrade = observation.quality_grade;
+            let qualityGradeText = "";
+            if (qualityGrade == 'research') {
+              qualityGradeText = "Research Grade";
+            } else if (qualityGrade == 'casual') {
+              qualityGradeText = "Casual";
+            }
+            if (qualityGradeText) {
+              const qualityGradeItem = document.createElement('div');
+              qualityGradeItem.setAttribute('class', `quality_grade ${qualityGrade}`);
+              qualityGradeItem.textContent = qualityGradeText;
+              statsList.appendChild(qualityGradeItem);
+            }
+
 
             observationDiv.appendChild(statsList);
 
             observationsDiv.appendChild(observationDiv);
           });
         }
+      }
+
+      function setImageSizeUrl(url, size) {
+        return url.replace('square.jpeg', `${size}.jpeg`)
       }
 
       function generateLink() {
