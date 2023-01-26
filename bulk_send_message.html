@@ -102,22 +102,5 @@
     <script src="js/bulk_send_message.js?v=1.0.0" type="module"></script>
     <script src="js/components/site_header.js?v=1.0.0"></script>
     <script src="js/components/user_info.js?v=1.0.0"></script>
-    <script type="module">
-      import { userLoadChanged, showAuthenticatedUser, showCurrentSite, authenticate, loadUsers, sendMessages, clearUsers, cancelLoad, logout } from "./js/bulk_send_message.js"
-
-      globalThis.authenticate = authenticate;
-      globalThis.loadUsers = loadUsers;
-      globalThis.sendMessages = sendMessages
-      globalThis.clearUsers = clearUsers;
-      globalThis.cancelLoad = cancelLoad;
-      globalThis.userLoadChanged = userLoadChanged;
-      globalThis.logout = logout;
-      
-      (async () => {
-        userLoadChanged();
-        await showAuthenticatedUser();
-        await showCurrentSite();
-      })();
-    </script>
   </body>
 </html>

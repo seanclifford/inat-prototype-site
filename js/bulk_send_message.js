@@ -3,6 +3,20 @@ import { ensureAuthenticated, clearAllAuthenticationState } from "./auth.js";
 import { getCurrentSite } from "./site.js";
 import { getAuthenticatedUser } from "./user.js";
 
+globalThis.authenticate = authenticate;
+globalThis.loadUsers = loadUsers;
+globalThis.sendMessages = sendMessages
+globalThis.clearUsers = clearUsers;
+globalThis.cancelLoad = cancelLoad;
+globalThis.userLoadChanged = userLoadChanged;
+globalThis.logout = logout;
+
+(async () => {
+  userLoadChanged();
+  await showAuthenticatedUser();
+  await showCurrentSite();
+})();
+
 let users = new Map();
 let loadUsersCancelToken = false;
 
