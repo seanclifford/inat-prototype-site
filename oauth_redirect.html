@@ -13,20 +13,6 @@
     <h1>Completing authentication...</h1>
     <div id="result"></div>
 
-    <script type="module">
-      import { performTokenRequest, redirectToPreAuthLocation } from "./js/auth.js"
-
-      (async () => {
-            
-        const urlParams = new URLSearchParams(window.location.search);
-        const auth_code = urlParams.get('code');
-
-        await performTokenRequest(auth_code);
-
-        let div = document.getElementById('result');
-        div.textContent = "Completed requesting access token!";
-        redirectToPreAuthLocation();
-      })();
-    </script>
+    <script type="module" src="js/oauth_redirect.js"></script>
   </body>
 </html>
