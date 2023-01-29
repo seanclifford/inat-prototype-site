@@ -9,6 +9,7 @@ globalThis.sendMessages = sendMessages
 globalThis.clearUsers = clearUsers;
 globalThis.cancelLoad = cancelLoad;
 globalThis.userLoadChanged = userLoadChanged;
+globalThis.removeUserFromResults = removeUserFromResults;
 globalThis.logout = logout;
 
 (async () => {
