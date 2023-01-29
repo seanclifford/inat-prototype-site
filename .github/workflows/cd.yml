@@ -42,8 +42,8 @@ jobs:
         run: |
           mkdir ./_site
           mv ./*.html favicon.ico ./_site
-          mv ./css ./site/css
-          mv ./img ./site/img
+          mv ./css ./_site/css
+          mv ./img ./_site/img
           mkdir ./_site/js
           mv ./js/components ./_site/js/components
           mv ./js/dist ./_site/js/dist
