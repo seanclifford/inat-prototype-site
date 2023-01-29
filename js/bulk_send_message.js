@@ -1,5 +1,5 @@
 import { Api } from "./api.js";
-import { ensureAuthenticated, clearAllAuthenticationState, authenticatedUser } from "./auth.js";
+import { ensureAuthenticated, clearAllAuthenticationState, authenticatedUser, getApiToken } from "./auth.js";
 import { getCurrentSite } from "./site.js";
 import { getAuthenticatedUser } from "./user.js";
 
@@ -172,7 +172,7 @@ export function clearUsers() {
     resetUserResults();
 }
 
-export async function sendMessagesToUsers(subject, message, authToken, callback){ 
+async function sendMessagesToUsers(subject, message, authToken, callback){ 
     let currMessage = 0;
     let results = await Promise.all([...users.values()].map(async (user) => {
         const userMessage = setMessageVariablesForUser(message, user);
@@ -199,10 +199,6 @@ function setMessageVariablesForUser(message, user) {
 }
 
 /* Element accessing functions */
-
-export function test(){
-    console.log('go');
-}
 
 export async function authenticate() {
   await ensureAuthenticated();
