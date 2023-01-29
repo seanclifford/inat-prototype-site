@@ -82,7 +82,7 @@ export const Api = {
         }
         else {
             let body = await response.json();
-            errorMessage = body?.error?.original?.errors?.base[0];
+            let errorMessage = body?.error?.original?.errors?.base[0];
             errorMessage = errorMessage ?? body?.error?.original?.error;
             return {
                 
