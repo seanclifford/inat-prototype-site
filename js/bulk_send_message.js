@@ -1,5 +1,5 @@
 import { Api } from "./api.js";
-import { ensureAuthenticated, clearAllAuthenticationState } from "./auth.js";
+import { ensureAuthenticated, clearAllAuthenticationState, authenticatedUser } from "./auth.js";
 import { getCurrentSite } from "./site.js";
 import { getAuthenticatedUser } from "./user.js";
 
