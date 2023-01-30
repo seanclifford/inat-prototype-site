@@ -6,9 +6,9 @@ It was also created so I could try out the iNaturalist API, and get familiar wit
 Styling is kept super simple to avoid time spent making things look pretty. Code may be a bit quick and dirty in places too.
 
 ## Developer setup
-Run `npm install`
-
-Then `npx http-server` to run the server.
+- `npm install`
+- `npm run build` or `npm run watch`
+- `npx http-server` to run the http server.
 
 ## Tools
 
