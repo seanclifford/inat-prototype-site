@@ -6,9 +6,8 @@ module.exports = {
     site_selection: './js/site_selection.js',
     auth_test: './js/auth_test.js',
   },
-  mode: 'development',
   output: {
-    path: `${__dirname}/js/dist`,
+    path: `${__dirname}/../js/dist`,
     filename: '[name].js',
   },
   module: {
