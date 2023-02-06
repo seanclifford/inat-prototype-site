@@ -13,16 +13,21 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.m?js$/,
+        test: /\.(m?js|jsx)$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
           options: {
             presets: [
-              ['@babel/preset-env', { targets: "defaults" }] //https://browsersl.ist/#q=defaults
+              ['@babel/preset-env', { targets: "> 0.2%,not dead,not op_mini all" }], //https://browsersl.ist/#q=>+0.2%25,not dead,not op_mini all
+              '@babel/preset-react'
             ]
           }
         }
+      },
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"]
       }
     ]
   }
