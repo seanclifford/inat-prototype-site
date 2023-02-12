@@ -1,6 +1,6 @@
-import { THIS_SITE_URI } from "./constants.js"
-import { getCurrentSite, getSiteUrl } from "./site.js"
-import { Api } from "./api.js"
+import { THIS_SITE_URI } from "../src/common/constants.js"
+import { getCurrentSite, getSiteUrl } from "../src/common/site.js"
+import { Api } from "../src/common/api/api.js"
 
 globalThis.checkObservations = checkObservations;
 globalThis.generateLink = generateLink;

@@ -1,4 +1,4 @@
-import { getCurrentSite, getAllSites, setCurrentSiteById } from "./site.js"
+import { getCurrentSite, getAllSites, setCurrentSiteById } from "../src/common/site.js"
 
 globalThis.saveCurrentSite = saveCurrentSite;
 

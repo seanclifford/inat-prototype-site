@@ -1,4 +1,4 @@
-import { Api } from "./api.js";
+import { Api } from "./api/api.js";
 
 export async function getCurrentSite(){
     let current_site = localStorage.getItem('current_site');

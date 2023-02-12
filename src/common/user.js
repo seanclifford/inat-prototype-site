@@ -1,5 +1,5 @@
 import { getApiToken } from "./auth.js";
-import { Api } from "./api.js";
+import { Api } from "./api/api.js";
 
 export async function getAuthenticatedUser() {
     const apiToken = await getApiToken();

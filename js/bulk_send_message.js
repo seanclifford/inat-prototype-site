@@ -1,7 +1,7 @@
-import { Api } from "./api.js";
-import { ensureAuthenticated, clearAllAuthenticationState, authenticatedUser, getApiToken } from "./auth.js";
-import { getCurrentSite } from "./site.js";
-import { getAuthenticatedUser } from "./user.js";
+import { Api } from "../src/common/api/api.js";
+import { ensureAuthenticated, clearAllAuthenticationState, authenticatedUser, getApiToken } from "../src/common/auth.js";
+import { getCurrentSite } from "../src/common/site.js";
+import { getAuthenticatedUser } from "../src/common/user.js";
 
 globalThis.authenticate = authenticate;
 globalThis.loadUsers = loadUsers;

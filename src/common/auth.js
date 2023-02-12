@@ -1,5 +1,5 @@
-import { getAuthFetchOptions, postFetchOptions } from "./fetch-options.js";
-import { limit } from "./api-limiter.js";
+import { getAuthFetchOptions, postFetchOptions } from "./api/fetch-options.js";
+import { limit } from "./api/api-limiter.js";
 import { THIS_SITE_URI } from "./constants.js";
 import { getCurrentSite } from "./site.js";
 

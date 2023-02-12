@@ -1,4 +1,4 @@
-import { performTokenRequest, redirectToPreAuthLocation } from "./auth.js"
+import { performTokenRequest, redirectToPreAuthLocation } from "../src/common/auth.js"
 
 (async () => {
       

@@ -1,5 +1,5 @@
-import { getAuthenticatedUser } from "./user.js"
-import { clearAllAuthenticationState, ensureAuthenticated } from "./auth.js"
+import { getAuthenticatedUser } from "../src/common/user.js"
+import { clearAllAuthenticationState, ensureAuthenticated } from "../src/common/auth.js"
 
 globalThis.ensureAuthenticated = ensureAuthenticated;
 globalThis.logout = logout;
