@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { getCurrentSite } from "../site";
 import "./SiteHeader.css"
 
-export function SiteHeader() {
+export default function SiteHeader() {
     const [site, setSite] = useState({});
 
     useEffect(() => {
