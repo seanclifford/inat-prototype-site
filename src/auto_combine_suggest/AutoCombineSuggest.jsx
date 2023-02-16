@@ -42,7 +42,7 @@ export default function AutoCombineSuggest() {
             return (
             <div>
                 {observations.map((observation) => (
-                    <div className='observation'>
+                    <div className='observation' key={observation.id}>
                         <div className='observation_header'>
                             <a href={getUrl(currentSite, `/observations/${observation.id}`)}>
                                 {observation.id} - {observation.species_guess}
