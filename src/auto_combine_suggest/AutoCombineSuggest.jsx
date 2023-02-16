@@ -1,12 +1,62 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import "./AutoCombineSuggest.css"
 import SiteHeader from "../common/components/SiteHeader.jsx"
+import {getCurrentSite, getUrl} from "../common/site.js"
+import {Api} from "../common/api/api.js"
 
 export default function AutoCombineSuggest() {
     const [observationIds, setObservationIds] = useState('');
+    const [observations, setObservations] = useState([]);
+    const [currentSite, setCurrentSite] = useState();
+    
+    useEffect(() => {
+        (async () => {
+           const site = await getCurrentSite();
+           setCurrentSite(site);
+        })();
+      }, []);
 
-    function checkObservations() {
+    function getObservationIdCsv() {
+        const convertedCsv = observationIds.replace(/\s/g,'');
+        return convertedCsv;
+      }
 
+    async function checkObservations() {
+        setObservations(await Api.getObservations(getObservationIdCsv()));
+    }
+
+    function setImageSizeUrl(url, size) {
+        return url.replace('square.jpeg', `${size}.jpeg`)
+      }
+
+    function renderObservations() {
+        if (observations.length == 0) {
+            return;
+        }
+        const distinctUserLogins = [...new Set(observations.map(o => o.user.login))];
+        if (distinctUserLogins.length > 1) {
+            return `These observations are not owned by the same user. You have entered observations for: ${distinctUserLogins.toString()}`;
+        } else {
+            let author = observations[0].user;
+            //TODO user-info component
+            return (
+            <div>
+                {observations.map((observation) => (
+                    <div className='observation'>
+                        <div className='observation_header'>
+                            <a href={getUrl(currentSite, `/observations/${observation.id}`)}>
+                                {observation.id} - {observation.species_guess}
+                            </a>
+                        </div>
+                        <div>{observation.observed_on_string}</div>
+                        {
+                            observation.photos.length > 0 ? 
+                                (<img src={setImageSizeUrl(observation.photos[0].url, 'small')}></img>): ''
+                        }
+                    </div>
+                ))}
+            </div>);
+        }
     }
 
     function generateLink() {
@@ -36,7 +86,9 @@ export default function AutoCombineSuggest() {
                 </li>
                 <li>
                     <input type="button" value='Check observations' onClick={checkObservations}/>
-                    <div id='observations_found'></div>
+                    <div id='observations_found'>
+                        {renderObservations()}
+                    </div>
                 </li>
                 <li><input type="button" value='Generate link' onClick={generateLink}/><br/>
                     <input type="text" id="link"/>

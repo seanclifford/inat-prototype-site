@@ -45,3 +45,8 @@ export async function getSiteUrl(path) {
     const url = new URL(path, currentSite.url);
     return url.toString();
 }
+
+export function getUrl(currentSite, path) {
+    const url = new URL(path, currentSite.url);
+    return url.toString();
+}
