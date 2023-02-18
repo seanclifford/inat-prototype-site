@@ -3,6 +3,7 @@ import "./AutoCombineSuggest.css"
 import SiteHeader from "../common/components/SiteHeader.jsx"
 import {getCurrentSite, getUrl} from "../common/site.js"
 import {Api} from "../common/api/api.js"
+import UserInfo from '../common/components/UserInfo.jsx';
 
 export default function AutoCombineSuggest() {
     const [observationIds, setObservationIds] = useState('');
@@ -38,9 +39,9 @@ export default function AutoCombineSuggest() {
             return `These observations are not owned by the same user. You have entered observations for: ${distinctUserLogins.toString()}`;
         } else {
             let author = observations[0].user;
-            //TODO user-info component
             return (
             <div>
+                <UserInfo img={author.icon_url} login={author.login} name={author.name}></UserInfo>
                 {observations.map((observation) => (
                     <div className='observation' key={observation.id}>
                         <div className='observation_header'>
