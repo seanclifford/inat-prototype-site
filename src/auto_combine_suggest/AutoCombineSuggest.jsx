@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import "./AutoCombineSuggest.css"
 import SiteHeader from "../common/components/SiteHeader.jsx"
-import {getCurrentSite, getUrl} from "../common/site.js"
-import {Api} from "../common/api/api.js"
+import { getCurrentSite } from "../common/site.js"
+import { Api } from "../common/api/api.js"
 import UserInfo from '../common/components/UserInfo.jsx';
+import Observation from './Observation.jsx';
+import { THIS_SITE_URI } from '../common/constants.js';
 
 export default function AutoCombineSuggest() {
     const [observationIds, setObservationIds] = useState('');
     const [observations, setObservations] = useState([]);
     const [currentSite, setCurrentSite] = useState();
+    const [linkUri, setLinkUri] = useState('');
     
     useEffect(() => {
         (async () => {
@@ -16,6 +19,15 @@ export default function AutoCombineSuggest() {
            setCurrentSite(site);
         })();
       }, []);
+
+    useEffect(() => {
+        if (observationIds.length == 0) return;
+
+        const autoCombineUrl = new URL(`${THIS_SITE_URI}/auto_combine.html`);
+        autoCombineUrl.searchParams.append('observation_ids', getObservationIdCsv())
+      
+        setLinkUri(autoCombineUrl.toString());
+    }, [observationIds]);
 
     function getObservationIdCsv() {
         const convertedCsv = observationIds.replace(/\s/g,'');
@@ -25,10 +37,6 @@ export default function AutoCombineSuggest() {
     async function checkObservations() {
         setObservations(await Api.getObservations(getObservationIdCsv()));
     }
-
-    function setImageSizeUrl(url, size) {
-        return url.replace('square.jpeg', `${size}.jpeg`)
-      }
 
     function renderObservations() {
         if (observations.length == 0) {
@@ -41,33 +49,19 @@ export default function AutoCombineSuggest() {
             let author = observations[0].user;
             return (
             <div>
-                <UserInfo img={author.icon_url} login={author.login} name={author.name}></UserInfo>
-                {observations.map((observation) => (
-                    <div className='observation' key={observation.id}>
-                        <div className='observation_header'>
-                            <a href={getUrl(currentSite, `/observations/${observation.id}`)}>
-                                {observation.id} - {observation.species_guess}
-                            </a>
-                        </div>
-                        <div>{observation.observed_on_string}</div>
-                        {
-                            observation.photos.length > 0 ? 
-                                (<img src={setImageSizeUrl(observation.photos[0].url, 'small')}></img>): ''
-                        }
-                    </div>
-                ))}
+                <UserInfo img={author.icon_url} login={author.login} name={author.name}/>
+                {observations.map((observation) => 
+                    <Observation 
+                        currentSite={currentSite} 
+                        observation={observation}
+                        key={observation.id}/>)}
             </div>);
         }
     }
 
-    function generateLink() {
-
-    }
-
-
     return (
         <div>
-            <SiteHeader></SiteHeader>
+            <SiteHeader/>
 
             <h1>Auto Combine Observations prototype for iNaturalist</h1> 
         
@@ -91,11 +85,9 @@ export default function AutoCombineSuggest() {
                         {renderObservations()}
                     </div>
                 </li>
-                <li><input type="button" value='Generate link' onClick={generateLink}/><br/>
-                    <input type="text" id="link"/>
-                </li>
                 <li>
-                    Copy the link and add it to a comment
+                    Copy the link and add it to a comment <br/>
+                    <input type="text" id="link" value={linkUri} readOnly/>
                 </li>
             </ol>
 
