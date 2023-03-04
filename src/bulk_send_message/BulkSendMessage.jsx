@@ -3,7 +3,39 @@ import SiteHeader from "../common/components/SiteHeader.jsx"
 
 export default function BulkSendMessage() {
 
-    function userLoadChanged(){}
+    const [userLoad, setUserLoad] = useState('user_ids');
+
+
+    function userLoadChanged(event){
+        setUserLoad(event.target.value);
+    }
+
+    function renderUserLoadFields()
+    {
+        switch (userLoad) {
+            case 'user_ids':
+                return  <div>
+                            Enter comma separated list of user logins or ids. e.g. johnsmith736,khaleesi89<br/>
+                            <input type="search" id="user_ids"/>
+                        </div>;
+            case 'fileUpload':
+                return  <div>
+                            Load from observations export file (CSV or JSON format) to message the observers of the observations.<br/>
+                            <input type="file" id="fileUpload" accept=".csv,.json" />
+                        </div>;
+            case 'observation_ids':
+                return  <div>
+                            Enter comma separated list of observation ids to message the observers of the observations.<br/>
+                            <input type="search" id="observation_ids"/>
+                        </div>;
+            case 'project_id':
+                return  <div>
+                            Enter a project id to load its members. This is in the url on the project page. e.g. example-project-name<br/>
+                            <input type="search" id="project_id"/>
+                        </div>;
+        }
+    }
+
     function authenticate(){}
     function logout(){}
     function loadUsers(){}
@@ -40,31 +72,16 @@ export default function BulkSendMessage() {
                         <button onClick={logout}>Logout</button>
                     </div>
                 </li>
-                <fieldset id="non_auth_fields" disabled style={{border: 'none',display:'inherit',margin:0,padding:0}}>
-                    <li>
+                <fieldset id="non_auth_fields" style={{border: 'none',display:'inherit',margin:0,padding:0}}>
+                    <li onChange={userLoadChanged}>
                         <legend>Choose data source to load users from:</legend>
-                        <label><input type="radio" name="user_load" value="user_ids" onChange={userLoadChanged} defaultChecked />User logins or IDs</label><br/>
-                        <label><input type="radio" name="user_load" value="fileUpload" onChange={userLoadChanged}  />Export file (CSV or JSON)</label><br/>
-                        <label><input type="radio" name="user_load" value="observation_ids" onChange={userLoadChanged}  />Observation IDs</label><br/>
-                        <label><input type="radio" name="user_load" value="project_id" onChange={userLoadChanged}  />Project ID</label><br/>
+                        <label><input type="radio" name="user_load" value="user_ids" checked={userLoad === 'user_ids'} />User logins or IDs</label><br/>
+                        <label><input type="radio" name="user_load" value="fileUpload" checked={userLoad === 'fileUpload'} />Export file (CSV or JSON)</label><br/>
+                        <label><input type="radio" name="user_load" value="observation_ids" checked={userLoad === 'observation_ids'} />Observation IDs</label><br/>
+                        <label><input type="radio" name="user_load" value="project_id" checked={userLoad === 'project_id'} />Project ID</label><br/>
                     </li>
                     <li>
-                        <div id="user_ids_container">
-                            Enter comma separated list of user logins or ids. e.g. johnsmith736,khaleesi89<br/>
-                            <input type="search" id="user_ids"/>
-                        </div>
-                        <div id="fileUpload_container">
-                            Load from observations export file (CSV or JSON format) to message the observers of the observations.<br/>
-                            <input type="file" id="fileUpload" accept=".csv,.json" />
-                        </div>
-                        <div id="observation_ids_container">
-                            Enter comma separated list of observation ids to message the observers of the observations.<br/>
-                            <input type="search" id="observation_ids"/>
-                        </div>
-                        <div id="project_id_container">
-                            Enter a project id to load its members. This is in the url on the project page. e.g. example-project-name<br/>
-                            <input type="search" id="project_id"/>
-                        </div>
+                        {renderUserLoadFields()}
                     </li>
                     <li>
                         <div id="load_users_section">
