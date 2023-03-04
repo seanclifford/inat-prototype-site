@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 module.exports = {
   entry: {
     bulk_send_message: './js/bulk_send_message.js',
+    bulk_send_message2: './src/bulk_send_message/bulk_send_message.js',
     auto_combine_suggest: './js/auto_combine_suggest.js',
     auto_combine_suggest2: './src/auto_combine_suggest/auto_combine_suggest.js',
     oauth_redirect: './js/oauth_redirect.js',
@@ -41,6 +42,12 @@ module.exports = {
       title: 'iNat prototypes - Auto Combine Observations PROTOTYPE',
       filename: 'auto_combine_suggest2.html',
       chunks: ['auto_combine_suggest2']
+    }),
+    new HtmlWebpackPlugin({
+      template: './src/template.ejs',
+      title: 'iNat prototypes - Bulk Send Messages PROTOTYPE',
+      filename: 'bulk_send_message2.html',
+      chunks: ['bulk_send_message2']
     })
   ]
 };
